@@ -47,8 +47,11 @@ public class WarehouseUtilities {
             return null;
         }
         Warehouse closest = (Warehouse)warehouses.toArray()[0];
+        if(closest.isHeadquarters && warehouses.size() > 1){
+            closest = (Warehouse)warehouses.toArray()[1];
+        }
         for(Warehouse warehouse : warehouses){
-            if(warehouse.health > 0 && exposureAddedToIgnite(warehouse, building) < exposureAddedToIgnite(closest, building)){
+            if(!warehouse.isHeadquarters && warehouse.health > 0 && exposureAddedToIgnite(warehouse, building) < exposureAddedToIgnite(closest, building)){
                 closest = warehouse;
             }
         }
