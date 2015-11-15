@@ -128,58 +128,58 @@ public class AI extends BaseAI {
         joeFiddle();
 
 
-        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        // Put your game logic here for runTurn
-
-        //Get my first warehouse
-        Warehouse warehouse = player.warehouses.get(0);
-        if(canBeBribed(warehouse)) {
-            //ignite the first enemy building unless it's a headquarters 
-            Building target = player.otherPlayer.buildings.get(0);
-            if(!target.isHeadquarters) {
-                warehouse.ignite(target);
-            }
-        }
-
-        //Get my frst fire department
-        FireDepartment fireDept = player.fireDepartments.get(0);
-        if(canBeBribed(fireDept)) {
-            Building target = player.otherPlayer.buildings.get(0);
-            if(!target.isHeadquarters) {
-                fireDept.extinguish(target);
-            }
-        }
-
-        //Get my first police station
-        PoliceDepartment police = player.policeDepartments.get(0);
-        if(canBeBribed(police)) {
-            //pick an enemy warehouse and raid it
-            Warehouse target = player.otherPlayer.warehouses.get(0);
-            //only raid if it is alive
-            if(target.health > 0) {
-                police.raid(target);
-            }
-        }
-
-        //get first weather station
-        WeatherStation intensifier = player.weatherStations.get(0);
-        if(canBeBribed(intensifier)) {
-
-            if(game.nextForecast.intensity < game.maxForecastIntensity) {
-                //only increase if intensity of weather is currently less than max
-                intensifier.intensify();
-            } else {
-                //otherwise pass true to decrease
-                intensifier.intensify(true);
-            }
-        }
-        
-        //get second weather station
-        WeatherStation rotater = player.weatherStations.get(1);
-        if(canBeBribed(rotater)) {
-            //rotate weather clockwise (pass false to go counterclockwise)
-            rotater.rotate();
-        }
+//        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
+//        // Put your game logic here for runTurn
+//
+//        //Get my first warehouse
+//        Warehouse warehouse = player.warehouses.get(0);
+//        if(canBeBribed(warehouse)) {
+//            //ignite the first enemy building unless it's a headquarters
+//            Building target = player.otherPlayer.buildings.get(0);
+//            if(!target.isHeadquarters) {
+//                warehouse.ignite(target);
+//            }
+//        }
+//
+//        //Get my frst fire department
+//        FireDepartment fireDept = player.fireDepartments.get(0);
+//        if(canBeBribed(fireDept)) {
+//            Building target = player.otherPlayer.buildings.get(0);
+//            if(!target.isHeadquarters) {
+//                fireDept.extinguish(target);
+//            }
+//        }
+//
+//        //Get my first police station
+//        PoliceDepartment police = player.policeDepartments.get(0);
+//        if(canBeBribed(police)) {
+//            //pick an enemy warehouse and raid it
+//            Warehouse target = player.otherPlayer.warehouses.get(0);
+//            //only raid if it is alive
+//            if(target.health > 0) {
+//                police.raid(target);
+//            }
+//        }
+//
+//        //get first weather station
+//        WeatherStation intensifier = player.weatherStations.get(0);
+//        if(canBeBribed(intensifier)) {
+//
+//            if(game.nextForecast.intensity < game.maxForecastIntensity) {
+//                //only increase if intensity of weather is currently less than max
+//                intensifier.intensify();
+//            } else {
+//                //otherwise pass true to decrease
+//                intensifier.intensify(true);
+//            }
+//        }
+//
+//        //get second weather station
+//        WeatherStation rotater = player.weatherStations.get(1);
+//        if(canBeBribed(rotater)) {
+//            //rotate weather clockwise (pass false to go counterclockwise)
+//            rotater.rotate();
+//        }
 
         return true;
         // <<-- /Creer-Merge: runTurn -->>
