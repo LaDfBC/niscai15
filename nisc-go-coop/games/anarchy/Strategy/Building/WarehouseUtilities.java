@@ -94,7 +94,7 @@ public class WarehouseUtilities {
     }
 
     public Building getBuildingAdjacentToTargetOppositeOfWind(Building target, WeatherStationUtilities.CardinalDirection direction){
-
+        System.out.println("warehouse util target: " + (target.isHeadquarters ? "hq" : "not hq"));
         String oppositeDirection = weatherStationUtilities.getOppositeOf(direction);
         if(oppositeDirection.equals("north")){
             return target.buildingNorth;
