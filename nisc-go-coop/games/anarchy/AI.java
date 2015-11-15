@@ -12,6 +12,7 @@ import java.util.HashMap;
 import games.anarchy.Strategy.Building.BuildingUtilities;
 import games.anarchy.Strategy.Building.EnemyHeadquartersUtilities;
 import games.anarchy.Strategy.Building.WarehouseUtilities;
+import games.anarchy.Strategy.Building.WeatherStationUtilities;
 import joueur.BaseAI;
 // <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 // you can add addtional import(s) here
@@ -103,15 +104,14 @@ public class AI extends BaseAI {
     }
 
     public void joeFiddle(){
-        player.log("herp derp");
-        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
+        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
 
 
         Building target = null;
-        List<Building> ehqNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
-        for(Building enemyneighbor : ehqNeighbors){
-            if(enemyneighbor != null && enemyneighbor.health > 0){
-                target = enemyneighbor;
+        Map<Building, WeatherStationUtilities.CardinalDirection> ehqNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
+        for(Map.Entry<Building, WeatherStationUtilities.CardinalDirection> enemyneighbor : ehqNeighbors.entrySet()){
+            if(enemyneighbor != null && enemyneighbor.getKey().health > 0){
+                target = enemyneighbor.getKey();
                 break;
             }
         }
