@@ -1,12 +1,10 @@
 package games.anarchy.Strategy.Building;
 
-import games.anarchy.Building;
-import games.anarchy.Forecast;
-import games.anarchy.Game;
-import games.anarchy.Player;
+import games.anarchy.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jeffrey on 11/14/2015.
@@ -204,5 +202,31 @@ public class WeatherStationUtilities {
         }
 
         return null; // Shouldn't happen
+    }
+
+    public WeatherStation getNextBribeableWeatherStation() {
+        for(WeatherStation weatherStation : player.weatherStations) {
+            if(!weatherStation.bribed) {
+                return weatherStation;
+            }
+        }
+
+        return null;
+    }
+
+    public String getOppositeOf(CardinalDirection value) {
+        if(value.name().equals("south")) {
+            return "north";
+        }
+        if(value.name().equals("north")) {
+            return "south";
+        }
+        if(value.name().equals("east")) {
+            return "west";
+        }
+        if(value.name().equals("west")) {
+            return "east";
+        }
+        return "YAHOOOOOO!";
     }
 }
