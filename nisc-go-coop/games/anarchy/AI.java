@@ -7,8 +7,12 @@ package games.anarchy;
 import java.util.*;
 
 import games.anarchy.Strategy.Building.*;
+import games.anarchy.Strategy.Heuristic.Pair;
 import games.anarchy.Strategy.Heuristic.WeatherOffsense;
 import joueur.BaseAI;
+
+import javax.print.DocFlavor;
+import javax.smartcardio.Card;
 
 // <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 // you can add addtional import(s) here
@@ -51,7 +55,7 @@ public class AI extends BaseAI {
      */
     public String getName() {
         // <<-- Creer-Merge: get-name -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        return "NISC - GO COOP - Jeff's Firefighters"; // REPLACE THIS WITH YOUR TEAM NAME!
+        return "NISC - GO COOP - BUGFIX"; // REPLACE THIS WITH YOUR TEAM NAME!
         // <<-- /Creer-Merge: get-name -->>
     }
 
@@ -213,6 +217,9 @@ public class AI extends BaseAI {
                 friendlyNeighbors.remove(neighbor);
             }
         } else { //Use the building on their side with the least fire on our side
+            if(friendlyNeighbors.get(myHeadquarters) != null) {
+                friendlyNeighbors.remove(myHeadquarters);
+            }
             Collections.sort(surroundingBuildingsOnFire, new Comparator<Building>() {
                 @Override
                 public int compare(Building o1, Building o2) {
@@ -230,23 +237,36 @@ public class AI extends BaseAI {
             }
         }
 
-        Map<Building, WeatherStationUtilities.CardinalDirection> buildings = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
+        Map.Entry<Building, WeatherStationUtilities.CardinalDirection> firelessDirection = friendlyNeighbors.entrySet().iterator().next();
+        Pair<Building, WeatherStationUtilities.CardinalDirection> cardinalBuilding;
+
+        if(firelessDirection.getValue().name().equals("south")) {
+            cardinalBuilding = new Pair<>(enemyHeadquarters.buildingSouth, WeatherStationUtilities.CardinalDirection.south);
+        } else if(firelessDirection.getValue().name().equals("north")) {
+            cardinalBuilding = new Pair<>(enemyHeadquarters.buildingNorth, WeatherStationUtilities.CardinalDirection.north);
+        } else if(firelessDirection.getValue().name().equals("west")) {
+            cardinalBuilding = new Pair<>(enemyHeadquarters.buildingEast, WeatherStationUtilities.CardinalDirection.east);
+        } else {
+            cardinalBuilding = new Pair<>(enemyHeadquarters.buildingWest, WeatherStationUtilities.CardinalDirection.west);
+        }
+
+//        Map<Building, WeatherStationUtilities.CardinalDirection> buildings = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
         String nextDirection = weatherStationUtilities.getNextWeather().direction;
-
-        //Do NOT light our own HQ on fire!
-        if(buildings.get(myHeadquarters) != null) {
-            buildings.remove(myHeadquarters);
-        }
-
-        Map.Entry<Building, WeatherStationUtilities.CardinalDirection> cardinalBuilding = buildings.entrySet().iterator().next();
-        boolean directionNeedsChanging = true;
-        for (Map.Entry<Building, WeatherStationUtilities.CardinalDirection> currentBuilding : buildings.entrySet()) {
-            if (weatherStationUtilities.isWeatherOpposite(cardinalBuilding.getValue().name(), nextDirection)) {
-                directionNeedsChanging = false;
-                cardinalBuilding = currentBuilding;
-                break;
-            }
-        }
+//
+//        //Do NOT light our own HQ on fire!
+//        if(buildings.get(myHeadquarters) != null) {
+//            buildings.remove(myHeadquarters);
+//        }
+//
+        String correctDirection = weatherStationUtilities.getOppositeOf(cardinalBuilding.getValue());
+        boolean directionNeedsChanging = !(cardinalBuilding.getValue().name().equals(correctDirection));
+//        for (Map.Entry<Building, WeatherStationUtilities.CardinalDirection> currentBuilding : buildings.entrySet()) {
+//            if (weatherStationUtilities.isWeatherOpposite(cardinalBuilding.getValue().name(), nextDirection)) {
+//                directionNeedsChanging = false;
+//                cardinalBuilding = currentBuilding;
+//                break;
+//            }
+//        }
 
 //        List<Building> oneBuilding = enemyHeadquarters.getBuildingsWithinDistance(1);
 
@@ -258,11 +278,13 @@ public class AI extends BaseAI {
         //Get a list of all our warehouses.  Use them to burn buildings around the enemy HQ
         Set<Warehouse> bribeableWarehouses = warehouseUtilities.getBribeableWarehouses();
 
-        while(cardinalBuilding.getKey().fire < 10) {
+        while(cardinalBuilding.getKey().fire < 11 && player.bribesRemaining > 0) {
             Warehouse attacker = warehouseUtilities.getClosestWarehouse(cardinalBuilding.getKey(), bribeableWarehouses);
-            if(attacker != null && player.bribesRemaining > 0) {
+            if(attacker != null) {
                 attacker.ignite(cardinalBuilding.getKey());
                 bribeableWarehouses.remove(attacker);
+            } else {
+                break;
             }
         }
 
@@ -271,13 +293,24 @@ public class AI extends BaseAI {
              WeatherStationUtilities.WeatherDirection direction = weatherStationUtilities.getDirection(weatherStationUtilities.getNextWeather().direction,
                     weatherStationUtilities.getOppositeOf(cardinalBuilding.getValue()));
             if(direction.equals(WeatherStationUtilities.WeatherDirection.Backward)) {
+                System.out.println("WeatherStation opposite value: " + weatherStationUtilities.getOppositeOf(cardinalBuilding.getValue()));
+                System.out.println("Next Direction: " + weatherStationUtilities.getNextWeather().direction);
+                System.out.println("Rotating clockwise");
                 weatherStationUtilities.getNextBribeableWeatherStation().rotate();
             } else if(direction.equals(WeatherStationUtilities.WeatherDirection.Clockwise)) {
+                System.out.println("WeatherStation opposite value: " + weatherStationUtilities.getOppositeOf(cardinalBuilding.getValue()));
+                System.out.println("Next Direction: " + weatherStationUtilities.getNextWeather().direction);
+                System.out.println("Rotating clockwise.");
                 weatherStationUtilities.getNextBribeableWeatherStation().rotate();
                 directionNeedsChanging = false;
             } else if (direction.equals(WeatherStationUtilities.WeatherDirection.CounterClockwise)) {
+                System.out.println("WeatherStation opposite value: " + weatherStationUtilities.getOppositeOf(cardinalBuilding.getValue()));
+                System.out.println("Next Direction: " + weatherStationUtilities.getNextWeather().direction);
+                System.out.println("Rotating counterclockwise");
                 weatherStationUtilities.getNextBribeableWeatherStation().rotate(true);
                 directionNeedsChanging = false;
+            } else {
+                break;
             }
         }
 
@@ -295,9 +328,10 @@ public class AI extends BaseAI {
 
 
         //Last priority: Play defensive and see if we can fire department away some of burn that's hurting us.
-//        if(player.bribesRemaining > 0) {
-//            fireExtinguishAroundHQ(player.bribesRemaining);
-//        }
+        if(player.bribesRemaining > 0) {
+            System.out.println("Calling the firefighters!");
+            fireExtinguishAroundHQ(player.bribesRemaining);
+        }
 
         return cardinalBuilding.getKey();
 
