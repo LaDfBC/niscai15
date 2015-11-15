@@ -7,7 +7,7 @@ import games.anarchy.Player;
 /**
  * Created by squeaky on 11/15/15.
  */
-public class FriendlyHeadquartersDefense {
+public class FriendlyHeadquartersStrategy {
 
     Player player;
     Game game;
@@ -17,7 +17,9 @@ public class FriendlyHeadquartersDefense {
     private Building SOUTH_OF_HQ = player.headquarters.buildingSouth;
     private Building WEST_OF_HQ = player.headquarters.buildingWest;
 
-    public FriendlyHeadquartersDefense(Player player, Game game) {
+
+
+    public FriendlyHeadquartersStrategy(Player player, Game game) {
         this.player = player;
         this.game = game;
     }
