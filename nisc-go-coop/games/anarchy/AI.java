@@ -168,7 +168,7 @@ public class AI extends BaseAI {
                     return;
                 }
                 if(attacker.health > 0 && !attacker.bribed){
-                    System.out.println(" burning");
+                    System.out.println(" burning " + enemyWarehouse.id);
                     attacker.ignite(enemyWarehouse);
                     if(enemyWarehouse.fire > 10){
                         if(keyIter.hasNext()) {
