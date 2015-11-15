@@ -111,7 +111,7 @@ public class AI extends BaseAI {
             }
         }
         if(target == null) {
-            target = enemyAttackers.get(0);
+            target = enemyAttackers.get(0).isHeadquarters ? enemyAttackers.get(1) : enemyAttackers.get(0);
 
         }
         while (player.bribesRemaining > 0) {
