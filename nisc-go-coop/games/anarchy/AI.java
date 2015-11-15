@@ -42,6 +42,7 @@ public class AI extends BaseAI {
     WarehouseUtilities warehouseUtilities;
     WeatherStationUtilities weatherStationUtilities;
     EnemyHeadquartersUtilities enemyHeadquartersUtilities;
+    FriendlyHeadquartersStrategy friendlyHqStrat;
 
 
     // <<-- /Creer-Merge: fields -->>
@@ -80,6 +81,8 @@ public class AI extends BaseAI {
         warehouseUtilities = new WarehouseUtilities(player, game);
         weatherStationUtilities = new WeatherStationUtilities(player, game);
         enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
+        friendlyHqStrat = new FriendlyHeadquartersStrategy(player,game);
+
         // <<-- /Creer-Merge: start -->>
     }
 
@@ -110,8 +113,6 @@ public class AI extends BaseAI {
     }
 
     public void joeFiddle(){
-        FriendlyHeadquartersStrategy friendlyHqStrat = new FriendlyHeadquartersStrategy(player,game);
-
         Building target = friendlyHqStrat.getClosestBuildingAdjacentToEnemyHqIfExposureIsLessThan(100);
         if(target != null){
             player.headquarters.ignite(target);
