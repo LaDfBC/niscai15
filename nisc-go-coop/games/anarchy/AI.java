@@ -111,9 +111,6 @@ public class AI extends BaseAI {
 
     }
 
-    public Map<Integer, Warehouse> sortMapByKey(Map<Integer, Warehouse> toSort){
-    }
-
     public void joeFiddle(){
         System.out.println("TURN: " + game.currentTurn);
 
