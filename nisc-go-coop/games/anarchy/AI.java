@@ -99,6 +99,7 @@ public class AI extends BaseAI {
     }
 
     public void joeFiddle(){
+        System.out.println("sop test");
         player.log("testtttt");
         EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
 
