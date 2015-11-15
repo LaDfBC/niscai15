@@ -157,13 +157,13 @@ public class AI extends BaseAI {
                 return;
             }
             Warehouse enemyWarehouse = dmgRequiredToKill.get(keyIter.next());
-            for(PoliceDepartment attacker : player.policeDepartments){
+            for(Warehouse attacker : player.warehouses){
                 if(player.bribesRemaining < 1){
                     return;
                 }
                 if(attacker.health > 0 && !attacker.bribed){
-                    System.out.println(" raiding to weaken");
-                    attacker.raid(enemyWarehouse);
+                    System.out.println(" burning");
+                    attacker.ignite(enemyWarehouse);
                 }
             }
         }
