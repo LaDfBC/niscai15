@@ -9,8 +9,6 @@ import java.util.List;
  * Created by Jeffrey on 11/14/2015.
  */
 public class WeatherStationUtilities {
-    public WeatherStationUtilities.CardinalDirection directionOfWindNextTurn;
-
 
     //Fire after wind
     public class FireAdded {
@@ -75,7 +73,6 @@ public class WeatherStationUtilities {
     public WeatherStationUtilities(Player player, Game game) {
         this.player = player;
         this.game = game;
-        this.directionOfWindNextTurn = WeatherStationUtilities.CardinalDirection.valueOf(game.nextForecast.direction);
     }
 
     /**
@@ -233,6 +230,6 @@ public class WeatherStationUtilities {
     }
 
     public CardinalDirection getDirectionOfWindNextTurn(){
-        return directionOfWindNextTurn;
+        return WeatherStationUtilities.CardinalDirection.valueOf(game.nextForecast.direction);
     }
 }
