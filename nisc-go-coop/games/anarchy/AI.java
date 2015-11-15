@@ -97,13 +97,23 @@ public class AI extends BaseAI {
     public void joeFiddle(){
         EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
 
-        Building enemyEhqNeighbor = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors().get(0);
-        List<Warehouse> myAttackers = player.warehouses;
 
-        while(player.bribesRemaining > 0){
-            Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(enemyEhqNeighbor, myAttackers);
-            myAttacker.ignite(enemyEhqNeighbor);
-            myAttackers.remove(myAttacker);
+        Building enemyEhqNeighbor = null;
+        List<Building> enemyNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
+        for(Building enemyneighbor : enemyNeighbors){
+            if(enemyneighbor != null){
+                enemyEhqNeighbor = enemyneighbor;
+                break;
+            }
+        }
+        if(enemyEhqNeighbor != null) {
+            List<Warehouse> myAttackers = player.warehouses;
+
+            while (player.bribesRemaining > 0) {
+                Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(enemyEhqNeighbor, myAttackers);
+                myAttacker.ignite(enemyEhqNeighbor);
+                myAttackers.remove(myAttacker);
+            }
         }
     }
 
