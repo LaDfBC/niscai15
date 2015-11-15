@@ -48,7 +48,7 @@ public class AI extends BaseAI {
      */
     public String getName() {
         // <<-- Creer-Merge: get-name -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        return "NISC - GO COOP"; // REPLACE THIS WITH YOUR TEAM NAME!
+        return "NISC - GO COOP - JOE FIDDLE"; // REPLACE THIS WITH YOUR TEAM NAME!
         // <<-- /Creer-Merge: get-name -->>
     }
 
