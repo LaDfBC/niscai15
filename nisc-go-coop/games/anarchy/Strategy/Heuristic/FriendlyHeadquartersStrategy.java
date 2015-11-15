@@ -50,8 +50,12 @@ public class FriendlyHeadquartersStrategy {
     //returns null if no targets exist
     public Building getClosestBuildingAdjacentToEnemyHqIfExposureIsLessThan(int maxExposure){
         if(distanceFromEnemyHq < maxExposure) {
-            Building buildingsAdjacentToTargetOppositeOfWind = warehouseUtilities.getBuildingAdjacentToTargetOppositeOfWind(player.otherPlayer.headquarters, weatherStationUtilities.getDirectionOfWindNextTurn());
-            return buildingsAdjacentToTargetOppositeOfWind;
+            WeatherStationUtilities.CardinalDirection windDirection = weatherStationUtilities.getDirectionOfWindNextTurn();
+            System.out.println(windDirection.toString());
+            if(windDirection != null) {
+                Building buildingsAdjacentToTargetOppositeOfWind = warehouseUtilities.getBuildingAdjacentToTargetOppositeOfWind(player.otherPlayer.headquarters, windDirection);
+                return buildingsAdjacentToTargetOppositeOfWind;
+            }
         }
         return null;
     }

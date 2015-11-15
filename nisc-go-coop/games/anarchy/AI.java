@@ -113,6 +113,7 @@ public class AI extends BaseAI {
     }
 
     public void joeFiddle(){
+        System.out.println("JOE");
         Building target = friendlyHqStrat.getClosestBuildingAdjacentToEnemyHqIfExposureIsLessThan(10000);
         if(target != null){
             player.headquarters.ignite(target);
