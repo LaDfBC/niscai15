@@ -167,6 +167,7 @@ public class AI extends BaseAI {
                 Warehouse whToAttackWIth = WarehouseUtilities.getClosestWarehouse(buildingToFire, bribeableWarehouses);
                 if (whToAttackWIth != null && player.bribesRemaining > 0) {
                     whToAttackWIth.ignite(buildingToFire);
+                    bribeableWarehouses.remove(whToAttackWIth);
                 }
             }
             numTurns--;
