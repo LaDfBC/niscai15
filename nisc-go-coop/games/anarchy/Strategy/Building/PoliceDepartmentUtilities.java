@@ -78,9 +78,9 @@ public class PoliceDepartmentUtilities {
         return raidableWarehouses;
     }
 
-    public PoliceDepartment getFirstStandingPoliceStation() {
+    public PoliceDepartment getFirstBribeablePoliceStation() {
         for(PoliceDepartment currentPopo : myPoliceDepartments) {
-            if(currentPopo.health > 0) {
+            if(currentPopo.health > 0 && !currentPopo.bribed) {
                 return currentPopo;
             }
         }

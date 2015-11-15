@@ -55,7 +55,7 @@ public class AI extends BaseAI {
      */
     public String getName() {
         // <<-- Creer-Merge: get-name -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        return "NISC - GO COOP - BUGFIX"; // REPLACE THIS WITH YOUR TEAM NAME!
+        return "NISC - GO COOP"; // REPLACE THIS WITH YOUR TEAM NAME!
         // <<-- /Creer-Merge: get-name -->>
     }
 
@@ -199,6 +199,14 @@ public class AI extends BaseAI {
 
     public Building focusedBurnStrategy() {
 //        return enemyHeadquarters;
+
+        //Kill warehouses before ANYTHING ELSE
+//        List<Warehouse> killableWarehouses = policeDepartmentUtilities.canKill(player.otherPlayer.warehouses);
+//        while(killableWarehouses.size() > 0 && policeDepartmentUtilities.getFirstBribeablePoliceStation() !=  null && player.bribesRemaining > 0) {
+//            policeDepartmentUtilities.getFirstBribeablePoliceStation().raid(killableWarehouses.get(0));
+//            killableWarehouses.remove(0);
+//        }
+
         //If we go on turn two, we want to NOT blow in the same direction the other dude is blowing
         // We'd ALSO like to ignite the fire he's (probably) going to fan in our face
 
@@ -268,9 +276,6 @@ public class AI extends BaseAI {
 //            }
 //        }
 
-//        List<Building> oneBuilding = enemyHeadquarters.getBuildingsWithinDistance(1);
-
-//        Building targetBuilding = oneBuilding.get(0);
 
         //IF HQ IS CLOSE ENOUGH, USE IT INSTEAD LOGIC
         //END HQ IS CLOSE ENOUGH LOGIC
@@ -321,7 +326,7 @@ public class AI extends BaseAI {
 
         //First priority: Raid the enemy HQ if it would be useful to dish out extra pain
         if(player.bribesRemaining > 0 && policeDepartmentUtilities.atLeastOnePoliceStationStanding() && enemyHeadquarters.exposure > 0) {
-            policeDepartmentUtilities.getFirstStandingPoliceStation().raid(enemyHeadquarters);
+            policeDepartmentUtilities.getFirstBribeablePoliceStation().raid(enemyHeadquarters);
         }
 
         //Increase other fires around enemy HQ
@@ -440,6 +445,8 @@ public class AI extends BaseAI {
      * @return represents if you want to end your turn. true means end the turn, false means to keep your turn going and re-call runTurn()
      */
     public boolean runTurn() {
+        //        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
+
         myAttackers = warehouseUtilities.getHealthyAndUnbribed(player.warehouses);
         enemyAttackers =  warehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
         //joeFiddle();
@@ -447,60 +454,11 @@ public class AI extends BaseAI {
 //        jeffWeather();
         georgeFiddle();
 
+//
 
-//        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-//        // Put your game logic here for runTurn
-//
-//        //Get my first warehouse
-//        Warehouse warehouse = player.warehouses.get(0);
-//        if(canBeBribed(warehouse)) {
-//            //ignite the first enemy building unless it's a headquarters
-//            Building target = player.otherPlayer.buildings.get(0);
-//            if(!target.isHeadquarters) {
-//                warehouse.ignite(target);
-//            }
-//        }
-//
-//        //Get my frst fire department
-//        FireDepartment fireDept = player.fireDepartments.get(0);
-//        if(canBeBribed(fireDept)) {
-//            Building target = player.otherPlayer.buildings.get(0);
-//            if(!target.isHeadquarters) {
-//                fireDept.extinguish(target);
-//            }
-//        }
-//
-//        //Get my first police station
-//        PoliceDepartment police = player.policeDepartments.get(0);
-//        if(canBeBribed(police)) {
-//            //pick an enemy warehouse and raid it
-//            Warehouse target = player.otherPlayer.warehouses.get(0);
-//            //only raid if it is alive
-//            if(target.health > 0) {
-//                police.raid(target);
-//            }
-//        }
-//
-//        //get first weather station
-//        WeatherStation intensifier = player.weatherStations.get(0);
-//        if(canBeBribed(intensifier)) {
-//
-//            if(game.nextForecast.intensity < game.maxForecastIntensity) {
-//                //only increase if intensity of weather is currently less than max
-//                intensifier.intensify();
-//            } else {
-//                //otherwise pass true to decrease
-//                intensifier.intensify(true);
-//            }
-//        }
-//
-//        //get second weather station
-//        WeatherStation rotater = player.weatherStations.get(1);
-//        if(canBeBribed(rotater)) {
-//            //rotate weather clockwise (pass false to go counterclockwise)
-//            rotater.rotate();
-//        }
-
+        if(player.bribesRemaining > 0) {
+            System.out.println("BRIBES REMAINING");
+        }
         return true;
         // <<-- /Creer-Merge: runTurn -->>
     }
