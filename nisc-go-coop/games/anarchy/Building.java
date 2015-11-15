@@ -4,10 +4,8 @@
  */
 package games.anarchy;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
+
 import org.json.JSONObject;
 
 import joueur.Client;
@@ -92,5 +90,41 @@ public class Building extends GameObject {
 
     // <<-- Creer-Merge: methods -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
     // you can add addtional method(s) here.
+
+    public List<Building> getBuildingsWithinDistance(int maxDistance) {
+        List<Building> buildings = new ArrayList<>();
+        if (maxDistance <= 0) {
+            return buildings;
+        }
+
+        //perform a BFS
+        Queue<Building> buildingQueue = new LinkedList<>();
+        Map<Building,Integer> distanceMap = new HashMap<>();
+        buildingQueue.add(this);
+        distanceMap.put(this, 0);
+
+        while (!buildingQueue.isEmpty()) {
+            Building b = buildingQueue.poll();
+            Integer dist = distanceMap.get(b);
+
+            if (dist < maxDistance) {
+                addDistNotNull(b.buildingEast, dist, buildingQueue, distanceMap);
+                addDistNotNull(b.buildingNorth, dist, buildingQueue, distanceMap);
+                addDistNotNull(b.buildingSouth, dist, buildingQueue, distanceMap);
+                addDistNotNull(b.buildingWest, dist, buildingQueue, distanceMap);
+            }
+        }
+
+        return buildings;
+    }
+
+    private void addDistNotNull(Building b, Integer fromDist, Queue<Building> bQueue, Map<Building, Integer> distMap) {
+        if (b == null || distMap.containsKey(b)) {
+            return;
+        }
+        distMap.put(b, fromDist + 1);
+        bQueue.add(b);
+    }
+
     // <<-- /Creer-Merge: methods -->>
 }
