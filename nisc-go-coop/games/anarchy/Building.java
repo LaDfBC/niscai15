@@ -108,21 +108,22 @@ public class Building extends GameObject {
             Integer dist = distanceMap.get(b);
 
             if (dist < maxDistance) {
-                addDistNotNull(b.buildingEast, dist, buildingQueue, distanceMap);
-                addDistNotNull(b.buildingNorth, dist, buildingQueue, distanceMap);
-                addDistNotNull(b.buildingSouth, dist, buildingQueue, distanceMap);
-                addDistNotNull(b.buildingWest, dist, buildingQueue, distanceMap);
+                addDistNotNull(b.buildingEast, dist, buildingQueue, distanceMap,buildings);
+                addDistNotNull(b.buildingNorth, dist, buildingQueue, distanceMap,buildings);
+                addDistNotNull(b.buildingSouth, dist, buildingQueue, distanceMap,buildings);
+                addDistNotNull(b.buildingWest, dist, buildingQueue, distanceMap,buildings);
             }
         }
 
         return buildings;
     }
 
-    private void addDistNotNull(Building b, Integer fromDist, Queue<Building> bQueue, Map<Building, Integer> distMap) {
+    private void addDistNotNull(Building b, Integer fromDist, Queue<Building> bQueue, Map<Building, Integer> distMap, List<Building> buildingList) {
         if (b == null || distMap.containsKey(b)) {
             return;
         }
         distMap.put(b, fromDist + 1);
+        buildingList.add(b);
         bQueue.add(b);
     }
 
