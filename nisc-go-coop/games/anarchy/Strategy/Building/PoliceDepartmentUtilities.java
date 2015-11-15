@@ -12,12 +12,18 @@ import java.util.Map;
  * Created by squeaky on 11/14/15.
  */
 public class PoliceDepartmentUtilities {
+    List<PoliceDepartment> myPoliceDepartments;
+
+    public PoliceDepartmentUtilities(List<PoliceDepartment> myPoliceDepartments) {
+        this.myPoliceDepartments = myPoliceDepartments;
+    }
+
     /**
      * ONLY PASS IN THE LIST OF *ENEMY* BUILDINGS!!
      * @param enemyWarehouses
      * @return
      */
-    public static List<Warehouse> canKill(List<games.anarchy.Warehouse> enemyWarehouses) {
+    public List<Warehouse> canKill(List<games.anarchy.Warehouse> enemyWarehouses) {
         List<Warehouse> killableWarehouses = new ArrayList<>();
         for(Warehouse warehouse : enemyWarehouses) {
             if((warehouse.health < (warehouse.exposure + warehouse.fire)) && warehouse.health > 0) {
@@ -28,7 +34,7 @@ public class PoliceDepartmentUtilities {
         return killableWarehouses;
     }
 
-    public static Map<Integer, Warehouse> fireRequiredToBurnAfterRaid(List<Warehouse> enemyWarehouses) {
+    public Map<Integer, Warehouse> fireRequiredToBurnAfterRaid(List<Warehouse> enemyWarehouses) {
         Map<Integer, Warehouse> fireRequiredMap = new HashMap<>();
         for(Warehouse warehouse: enemyWarehouses) {
             if(warehouse.health - warehouse.fire > 0) {
@@ -39,7 +45,7 @@ public class PoliceDepartmentUtilities {
         return fireRequiredMap;
     }
 
-    public static boolean atLeastOnePoliceStationStandings(List<PoliceDepartment> myPoliceDepartments) {
+    public boolean atLeastOnePoliceStationStandings() {
         for(PoliceDepartment policeDepartment : myPoliceDepartments) {
             if(policeDepartment.health > 0) {
                 return true;

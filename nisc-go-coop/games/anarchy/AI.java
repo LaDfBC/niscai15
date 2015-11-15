@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import games.anarchy.Strategy.Building.EnemyHeadquartersUtilities;
+import games.anarchy.Strategy.Building.WarehouseUtilities;
 import joueur.BaseAI;
 // <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 // you can add addtional import(s) here
@@ -29,8 +31,11 @@ public class AI extends BaseAI {
      */
     public Player player;
 
+
+
     // <<-- Creer-Merge: fields -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-    // you can add additional fields here for your AI to use
+    public Warehouse myHeadquarters;
+    public Warehouse enemyHeadquarters;
     // <<-- /Creer-Merge: fields -->>
 
 
@@ -51,6 +56,19 @@ public class AI extends BaseAI {
     public void start() {
         // <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         super.start();
+        for(Warehouse warehouse : player.warehouses) {
+            if(warehouse.isHeadquarters) {
+                myHeadquarters = warehouse;
+                break;
+            }
+        }
+
+        for(Warehouse warehouse : player.otherPlayer.warehouses) {
+            if(warehouse.isHeadquarters) {
+                enemyHeadquarters = warehouse;
+                break;
+            }
+        }
         // <<-- /Creer-Merge: start -->>
     }
 
@@ -76,6 +94,30 @@ public class AI extends BaseAI {
         // <<-- /Creer-Merge: ended -->>
     }
 
+    public void joeFiddle(){
+        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
+
+
+        Building enemyEhqNeighbor = null;
+        List<Building> enemyNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
+        for(Building enemyneighbor : enemyNeighbors){
+            if(enemyneighbor != null){
+                enemyEhqNeighbor = enemyneighbor;
+                break;
+            }
+        }
+        if(enemyEhqNeighbor != null) {
+            List<Warehouse> myAttackers = player.warehouses;
+
+            while (player.bribesRemaining > 0) {
+                Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(enemyEhqNeighbor, myAttackers);
+                if(myAttacker != null){
+                    myAttacker.ignite(enemyEhqNeighbor);
+                    myAttackers.remove(myAttacker);
+                }
+            }
+        }
+    }
 
     /**
      * This is called every time the AI is asked to respond with a command during their turn
@@ -83,58 +125,61 @@ public class AI extends BaseAI {
      * @return represents if you want to end your turn. true means end the turn, false means to keep your turn going and re-call runTurn()
      */
     public boolean runTurn() {
-        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        // Put your game logic here for runTurn
+        joeFiddle();
 
-        //Get my first warehouse
-        Warehouse warehouse = player.warehouses.get(0);
-        if(canBeBribed(warehouse)) {
-            //ignite the first enemy building unless it's a headquarters 
-            Building target = player.otherPlayer.buildings.get(0);
-            if(!target.isHeadquarters) {
-                warehouse.ignite(target);
-            }
-        }
 
-        //Get my frst fire department
-        FireDepartment fireDept = player.fireDepartments.get(0);
-        if(canBeBribed(fireDept)) {
-            Building target = player.otherPlayer.buildings.get(0);
-            if(!target.isHeadquarters) {
-                fireDept.extinguish(target);
-            }
-        }
-
-        //Get my first police station
-        PoliceDepartment police = player.policeDepartments.get(0);
-        if(canBeBribed(police)) {
-            //pick an enemy warehouse and raid it
-            Warehouse target = player.otherPlayer.warehouses.get(0);
-            //only raid if it is alive
-            if(target.health > 0) {
-                police.raid(target);
-            }
-        }
-
-        //get first weather station
-        WeatherStation intensifier = player.weatherStations.get(0);
-        if(canBeBribed(intensifier)) {
-
-            if(game.nextForecast.intensity < game.maxForecastIntensity) {
-                //only increase if intensity of weather is currently less than max
-                intensifier.intensify();
-            } else {
-                //otherwise pass true to decrease
-                intensifier.intensify(true);
-            }
-        }
-        
-        //get second weather station
-        WeatherStation rotater = player.weatherStations.get(1);
-        if(canBeBribed(rotater)) {
-            //rotate weather clockwise (pass false to go counterclockwise)
-            rotater.rotate();
-        }
+//        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
+//        // Put your game logic here for runTurn
+//
+//        //Get my first warehouse
+//        Warehouse warehouse = player.warehouses.get(0);
+//        if(canBeBribed(warehouse)) {
+//            //ignite the first enemy building unless it's a headquarters
+//            Building target = player.otherPlayer.buildings.get(0);
+//            if(!target.isHeadquarters) {
+//                warehouse.ignite(target);
+//            }
+//        }
+//
+//        //Get my frst fire department
+//        FireDepartment fireDept = player.fireDepartments.get(0);
+//        if(canBeBribed(fireDept)) {
+//            Building target = player.otherPlayer.buildings.get(0);
+//            if(!target.isHeadquarters) {
+//                fireDept.extinguish(target);
+//            }
+//        }
+//
+//        //Get my first police station
+//        PoliceDepartment police = player.policeDepartments.get(0);
+//        if(canBeBribed(police)) {
+//            //pick an enemy warehouse and raid it
+//            Warehouse target = player.otherPlayer.warehouses.get(0);
+//            //only raid if it is alive
+//            if(target.health > 0) {
+//                police.raid(target);
+//            }
+//        }
+//
+//        //get first weather station
+//        WeatherStation intensifier = player.weatherStations.get(0);
+//        if(canBeBribed(intensifier)) {
+//
+//            if(game.nextForecast.intensity < game.maxForecastIntensity) {
+//                //only increase if intensity of weather is currently less than max
+//                intensifier.intensify();
+//            } else {
+//                //otherwise pass true to decrease
+//                intensifier.intensify(true);
+//            }
+//        }
+//
+//        //get second weather station
+//        WeatherStation rotater = player.weatherStations.get(1);
+//        if(canBeBribed(rotater)) {
+//            //rotate weather clockwise (pass false to go counterclockwise)
+//            rotater.rotate();
+//        }
 
         return true;
         // <<-- /Creer-Merge: runTurn -->>

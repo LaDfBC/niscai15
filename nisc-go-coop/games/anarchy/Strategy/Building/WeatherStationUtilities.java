@@ -1,6 +1,7 @@
 package games.anarchy.Strategy.Building;
 
 import games.anarchy.Building;
+import games.anarchy.Forecast;
 import games.anarchy.Game;
 import games.anarchy.Player;
 
@@ -124,5 +125,9 @@ public class WeatherStationUtilities {
             }
         }
         return onFire;
+    }
+
+    public Forecast getNextWeather() {
+        return game.nextForecast;
     }
 }
