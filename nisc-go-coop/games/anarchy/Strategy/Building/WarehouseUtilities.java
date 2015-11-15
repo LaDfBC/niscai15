@@ -1,6 +1,8 @@
 package games.anarchy.Strategy.Building;
 
 import games.anarchy.Building;
+import games.anarchy.Game;
+import games.anarchy.Player;
 import games.anarchy.Warehouse;
 
 import java.util.ArrayList;
@@ -13,6 +15,17 @@ import java.util.Map;
  * Created by squeaky on 11/14/15.
  */
 public class WarehouseUtilities {
+
+    private Player player;
+    private Game game;
+    private WeatherStationUtilities weatherStationUtilities;
+
+    public WarehouseUtilities(Player player, Game game) {
+        this.player = player;
+        this.game = game;
+        this.weatherStationUtilities = new WeatherStationUtilities(player, game);
+    }
+
     public static int exposureAddedToIgnite(Warehouse ignitingWarehouse, Building buildingToBurn) {
         return Math.abs(ignitingWarehouse.x - buildingToBurn.x) + Math.abs(ignitingWarehouse.y - buildingToBurn.y);
     }
@@ -79,4 +92,21 @@ public class WarehouseUtilities {
         }
         return targetsForWarehouses;
     }
+
+    public Building getBuildingAdjacentToTargetOppositeOfWind(Building target, WeatherStationUtilities.CardinalDirection direction){
+
+        String oppositeDirection = weatherStationUtilities.getOppositeOf(direction);
+        if(oppositeDirection.equals("north")){
+            return target.buildingNorth;
+        }else if(oppositeDirection.equals("south")){
+            return target.buildingSouth;
+        }else if(oppositeDirection.equals("east")){
+            return target.buildingEast;
+        }else if(oppositeDirection.equals("west")){
+            return target.buildingWest;
+        }else{
+            return null;
+        }
+    }
+
 }

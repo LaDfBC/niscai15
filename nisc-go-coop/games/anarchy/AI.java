@@ -10,6 +10,7 @@ import games.anarchy.Strategy.Building.BuildingUtilities;
 import games.anarchy.Strategy.Building.EnemyHeadquartersUtilities;
 import games.anarchy.Strategy.Building.WarehouseUtilities;
 import games.anarchy.Strategy.Building.WeatherStationUtilities;
+import games.anarchy.Strategy.Heuristic.FriendlyHeadquartersStrategy;
 import games.anarchy.Strategy.Heuristic.WeatherOffsense;
 import joueur.BaseAI;
 // <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -38,6 +39,10 @@ public class AI extends BaseAI {
     public Warehouse enemyHeadquarters;
     List<Warehouse> myAttackers;
     List<Warehouse> enemyAttackers;
+    WarehouseUtilities warehouseUtilities;
+    WeatherStationUtilities weatherStationUtilities;
+    EnemyHeadquartersUtilities enemyHeadquartersUtilities;
+
 
     // <<-- /Creer-Merge: fields -->>
 
@@ -72,6 +77,9 @@ public class AI extends BaseAI {
                 break;
             }
         }
+        warehouseUtilities = new WarehouseUtilities(player, game);
+        weatherStationUtilities = new WeatherStationUtilities(player, game);
+        enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
         // <<-- /Creer-Merge: start -->>
     }
 
@@ -102,22 +110,11 @@ public class AI extends BaseAI {
     }
 
     public void joeFiddle(){
-        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
-        Random random = new Random();
-        int numRandomTargets = random.nextInt(10);
-        List<Building> targets = new ArrayList<>();
-        if(player.otherPlayer.buildings.size() <= numRandomTargets){
-            targets = player.otherPlayer.buildings;
-        }else {
+        FriendlyHeadquartersStrategy friendlyHqStrat = new FriendlyHeadquartersStrategy(player,game);
 
-            while (targets.size() < numRandomTargets) {
-                targets.add(player.otherPlayer.buildings.get(random.nextInt(player.otherPlayer.buildings.size())));
-            }
-        }
-        if(targets.isEmpty()){
-            return;
-        }else {
-            igniteTargetsUsingClosestWarehouses(targets, myAttackers, player.bribesRemaining);
+        Building target = friendlyHqStrat.getClosestBuildingAdjacentToEnemyHqIfExposureIsLessThan(100);
+        if(target != null){
+            player.headquarters.ignite(target);
         }
 
     }
@@ -176,10 +173,12 @@ public class AI extends BaseAI {
      * @return represents if you want to end your turn. true means end the turn, false means to keep your turn going and re-call runTurn()
      */
     public boolean runTurn() {
-        myAttackers = WarehouseUtilities.getHealthyAndUnbribed(player.warehouses);
-        enemyAttackers =  WarehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
-//        joeFiddle();
-        jeffWeather();
+        myAttackers = warehouseUtilities.getHealthyAndUnbribed(player.warehouses);
+        enemyAttackers =  warehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
+        joeFiddle();
+//        jeffWeather2();
+//        jeffWeather();
+//        georgeFiddle();
 
 
 //        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
