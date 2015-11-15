@@ -4,6 +4,7 @@ import games.anarchy.Building;
 import games.anarchy.Warehouse;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,11 +40,11 @@ public class WarehouseUtilities {
     }
 
     /*make sure you check for null when you use this!*/
-    public static Warehouse getClosestWarehouse(Building building, List<Warehouse> warehouses){
+    public static Warehouse getClosestWarehouse(Building building, Collection<Warehouse> warehouses){
         if(building == null || warehouses == null || warehouses.isEmpty()){
             return null;
         }
-        Warehouse closest = warehouses.get(0);
+        Warehouse closest = (Warehouse)warehouses.toArray()[0];
         for(Warehouse warehouse : warehouses){
             if(warehouse.health > 0 && exposureAddedToIgnite(warehouse, building) < exposureAddedToIgnite(closest, building)){
                 closest = warehouse;
