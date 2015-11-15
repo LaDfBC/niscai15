@@ -99,9 +99,9 @@ public class AI extends BaseAI {
 
 
         Building enemyEhqNeighbor = null;
-        List<Building> enemyNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
-        for(Building enemyneighbor : enemyNeighbors){
-            if(enemyneighbor != null){
+        List<Building> enemyHqNeighbor = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
+        for(Building enemyneighbor : enemyHqNeighbor){
+            if(enemyneighbor != null && enemyneighbor.health > 0){
                 enemyEhqNeighbor = enemyneighbor;
                 break;
             }
