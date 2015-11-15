@@ -253,7 +253,12 @@ public class AI extends BaseAI {
         // <<-- /Creer-Merge: runTurn -->>
     }
 
-
+    public void igniteTargetsUsingClosestWarehouses(List<Building> targets, List<Warehouse> myWarehouses, int bribesToSpend){
+        Map<Warehouse, Building> targetsForWarehouses = WarehouseUtilities.getTargetsForWarehouses(targets, myWarehouses, bribesToSpend);
+        for(Map.Entry<Warehouse, Building> entry : targetsForWarehouses.entrySet()){
+            entry.getKey().ignite(entry.getValue());
+        }
+    }
     // <<-- Creer-Merge: methods -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
     // you can add additional methods here for your AI to call
 
