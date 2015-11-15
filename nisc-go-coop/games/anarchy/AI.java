@@ -170,10 +170,10 @@ public class AI extends BaseAI {
                 if(attacker.health > 0 && !attacker.bribed){
                     System.out.println(" burning " + enemyWarehouse.id);
                     attacker.ignite(enemyWarehouse);
-                    if(enemyWarehouse.fire > 10){
+                    if(enemyWarehouse.fire > 10 || enemyWarehouse.isHeadquarters){
                         while(keyIter.hasNext()) {
                             enemyWarehouse = dmgRequiredToKill.get(keyIter.next());
-                            if(enemyWarehouse.fire < 10){
+                            if(enemyWarehouse.fire < 10 && !enemyWarehouse.isHeadquarters){
                                 System.out.println("switched target");
                                 break;
                             }
