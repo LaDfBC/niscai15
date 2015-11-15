@@ -108,7 +108,7 @@ public class WarehouseUtilities {
         }
         if(ret != null){
 
-            System.out.println("turn: " +  game.currentTurn + " igniting " + oppositeDirection + " of HQ");
+            System.out.println("  igniting " + oppositeDirection + " of HQ");
         }
         return ret;
     }
