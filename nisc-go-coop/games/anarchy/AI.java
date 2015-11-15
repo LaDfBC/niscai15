@@ -98,43 +98,43 @@ public class AI extends BaseAI {
         // <<-- /Creer-Merge: ended -->>
     }
 
-    public void joeFiddle(){
-        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
+//    public void joeFiddle(){
+//        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
+//
+//
+//        Building target = null;
+//        List<Building> ehqNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
+//        for(Building enemyneighbor : ehqNeighbors){
+//            if(enemyneighbor != null && enemyneighbor.health > 0){
+//                target = enemyneighbor;
+//                break;
+//            }
+//        }
+//        if(target == null) {
+//            target = enemyAttackers.get(0);
+//
+//        }
+//        while (player.bribesRemaining > 0) {
+//            attackUsingNearestWarehouse(target);
+//        }
+//    }
 
-
-        Building target = null;
-        List<Building> ehqNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
-        for(Building enemyneighbor : ehqNeighbors){
-            if(enemyneighbor != null && enemyneighbor.health > 0){
-                target = enemyneighbor;
-                break;
-            }
-        }
-        if(target == null) {
-            target = enemyAttackers.get(0);
-
-        }
-        while (player.bribesRemaining > 0) {
-            attackUsingNearestWarehouse(target);
-        }
-    }
-
-    public void attackUsingNearestWarehouse(Building target){
-        Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(target, myAttackers);
-        if(myAttacker != null){
-            myAttacker.ignite(target);
-            myAttackers.remove(myAttacker);
-        }
-    }
+//    public void attackUsingNearestWarehouse(Building target){
+//        Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(target, myAttackers);
+//        if(myAttacker != null){
+//            myAttacker.ignite(target);
+//            myAttackers.remove(myAttacker);
+//        }
+//    }
     /**
      * This is called every time the AI is asked to respond with a command during their turn
      *
      * @return represents if you want to end your turn. true means end the turn, false means to keep your turn going and re-call runTurn()
      */
     public boolean runTurn() {
-        myAttackers = WarehouseUtilities.getHealthyAndUnbribed(player.warehouses);
-        enemyAttackers =  WarehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
-        joeFiddle();
+//        myAttackers = WarehouseUtilities.getHealthyAndUnbribed(player.warehouses);
+//        enemyAttackers =  WarehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
+//        joeFiddle();
 
 
 //        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
