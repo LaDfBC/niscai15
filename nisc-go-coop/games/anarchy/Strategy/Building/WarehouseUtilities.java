@@ -1,6 +1,5 @@
 package games.anarchy.Strategy.Building;
 
-import com.sun.javafx.beans.annotations.NonNull;
 import games.anarchy.Building;
 import games.anarchy.Warehouse;
 
