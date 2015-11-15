@@ -122,6 +122,7 @@ public class AI extends BaseAI {
     public void attackUsingNearestWarehouse(Building target){
         Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(target, myAttackers);
         if(myAttacker != null){
+            player.log(myAttacker.id + " : " + target.id);
             myAttacker.ignite(target);
             myAttackers.remove(myAttacker);
         }
