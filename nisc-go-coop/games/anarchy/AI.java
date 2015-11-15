@@ -137,7 +137,9 @@ public class AI extends BaseAI {
                     return;
                 }
                 if(!policeDepartment.bribed && policeDepartment.health > 0){
-                    policeDepartment.raid(killableEnemies.pop());
+                    if(killableEnemies != null && !killableEnemies.isEmpty()) {
+                        policeDepartment.raid(killableEnemies.pop());
+                    }
                 }
             }
         }
