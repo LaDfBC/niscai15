@@ -45,7 +45,7 @@ public class PoliceDepartmentUtilities {
         return fireRequiredMap;
     }
 
-    public boolean atLeastOnePoliceStationStandings() {
+    public boolean atLeastOnePoliceStationStanding() {
         for(PoliceDepartment policeDepartment : myPoliceDepartments) {
             if(policeDepartment.health > 0) {
                 return true;

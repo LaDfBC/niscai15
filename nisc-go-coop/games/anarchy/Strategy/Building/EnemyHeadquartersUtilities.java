@@ -52,7 +52,7 @@ public class EnemyHeadquartersUtilities {
         sourcesOfDamage.put(SourceOfDamage.FIRE_ALONE, new Pair<>(enemyHeadquarters.fire, 0));
 
         //Police
-        Integer possibleDamage = policeDepartmentUtilities.atLeastOnePoliceStationStandings() ? enemyHeadquarters.exposure : 0;
+        Integer possibleDamage = policeDepartmentUtilities.atLeastOnePoliceStationStanding() ? enemyHeadquarters.exposure : 0;
         sourcesOfDamage.put(SourceOfDamage.POLICE, new Pair<>(possibleDamage, 1));
 
         //Current fire + wind
