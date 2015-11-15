@@ -7,7 +7,6 @@ import games.anarchy.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by Jeffrey on 11/14/2015.
@@ -119,7 +118,12 @@ public class WeatherStationUtilities {
     }
 
     public List<Building> getBuildingsOnFire() {
-        List<Building> onFire = player.buildings.stream().filter(b -> b.fire > 0).collect(Collectors.toList());
+        List<Building> onFire = new ArrayList<>();
+        for (Building b : game.buildings) {
+            if (b.fire > 0) {
+                onFire.add(b);
+            }
+        }
         return onFire;
     }
 
