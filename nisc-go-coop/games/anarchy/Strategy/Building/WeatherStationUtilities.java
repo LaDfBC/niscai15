@@ -206,7 +206,7 @@ public class WeatherStationUtilities {
 
     public WeatherStation getNextBribeableWeatherStation() {
         for(WeatherStation weatherStation : player.weatherStations) {
-            if(!weatherStation.bribed) {
+            if(!weatherStation.bribed && weatherStation.health > 0) {
                 return weatherStation;
             }
         }

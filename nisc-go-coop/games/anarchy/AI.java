@@ -51,7 +51,7 @@ public class AI extends BaseAI {
      */
     public String getName() {
         // <<-- Creer-Merge: get-name -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        return "NISC - GO COOP - GEORGE"; // REPLACE THIS WITH YOUR TEAM NAME!
+        return "NISC - GO COOP - Jeff's Firefighters"; // REPLACE THIS WITH YOUR TEAM NAME!
         // <<-- /Creer-Merge: get-name -->>
     }
 
@@ -293,9 +293,14 @@ public class AI extends BaseAI {
 
         //Increase other fires around enemy HQ
 
-        return cardinalBuilding.getKey();
 
         //Last priority: Play defensive and see if we can fire department away some of burn that's hurting us.
+//        if(player.bribesRemaining > 0) {
+//            fireExtinguishAroundHQ(player.bribesRemaining);
+//        }
+
+        return cardinalBuilding.getKey();
+
         // Check if fire would hurt our HQ and use it the Fire Department to put out fires
     }
 
