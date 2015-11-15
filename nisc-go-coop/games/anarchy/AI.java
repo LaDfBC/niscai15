@@ -171,9 +171,12 @@ public class AI extends BaseAI {
                     System.out.println(" burning " + enemyWarehouse.id);
                     attacker.ignite(enemyWarehouse);
                     if(enemyWarehouse.fire > 10){
-                        if(keyIter.hasNext()) {
+                        while(keyIter.hasNext()) {
                             enemyWarehouse = dmgRequiredToKill.get(keyIter.next());
-                            System.out.print("  switching target");
+                            if(enemyWarehouse.fire < 10){
+                                System.out.println("switched target");
+                                break;
+                            }
                         }
                     }
                 }
