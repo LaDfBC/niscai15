@@ -12,7 +12,9 @@ import java.util.Map;
  */
 public class FireStationUtilities {
 
-    public static Map<Building, Integer> buildingsThatCanBeCompletelyExtinguished(List<Building> allBuildings,
+    FireStationUtilities() {}
+
+    public Map<Building, Integer> buildingsThatCanBeCompletelyExtinguished(List<Building> allBuildings,
                                                                           int numberMyRemainingFireDepartments) {
         Map<Building, Integer> extinguisherMap = new HashMap<>();
         for(Building building : allBuildings) {
@@ -30,7 +32,7 @@ public class FireStationUtilities {
         return extinguisherMap;
     }
 
-    public static int getNumberOfMyRemainingFireStations(List<FireDepartment> myFireDepartments) {
+    public int getNumberOfMyRemainingFireStations(List<FireDepartment> myFireDepartments) {
         int remaining = 0;
         for(FireDepartment fireDepartment : myFireDepartments) {
             if(fireDepartment.health > 0) {
@@ -39,5 +41,9 @@ public class FireStationUtilities {
         }
 
         return remaining;
+    }
+
+    public Map<Integer, Building> getBribesRequiredToPutOutBuildingsNearHQ() {
+        return null;
     }
 }

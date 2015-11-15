@@ -1,27 +1,31 @@
 package games.anarchy.Strategy.Building;
 
 import games.anarchy.Building;
+import games.anarchy.Player;
 import games.anarchy.Warehouse;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by squeaky on 11/14/15.
  */
 public class WarehouseUtilities {
-    public static int exposureAddedToIgnite(Warehouse ignitingWarehouse, Building buildingToBurn) {
+
+    private Player player;
+
+    public WarehouseUtilities(Player player) {
+        this.player = player;
+    }
+
+    public int exposureAddedToIgnite(Warehouse ignitingWarehouse, Building buildingToBurn) {
         return Math.abs(ignitingWarehouse.x - buildingToBurn.x) + Math.abs(ignitingWarehouse.y - buildingToBurn.y);
     }
 
-    public static List<Warehouse> getHealthyAndUnbribed(List<Warehouse> buildings){
+    public List<Warehouse> getHealthyAndUnbribed(List<Warehouse> buildings){
         return getUnbribed(getHealthy(buildings));
     }
 
-    public static List<Warehouse> getHealthy(List<Warehouse> buildings){
+    public List<Warehouse> getHealthy(List<Warehouse> buildings){
         List<Warehouse> ret = new ArrayList<>();
         for(Warehouse building : buildings){
             if(building.health > 0){
@@ -31,7 +35,7 @@ public class WarehouseUtilities {
         return ret;
     }
 
-    public static List<Warehouse> getUnbribed(List<Warehouse> buildings){
+    public List<Warehouse> getUnbribed(List<Warehouse> buildings){
         List<Warehouse> ret = new ArrayList<>();
         for(Warehouse building : buildings){
             if(!building.bribed){
@@ -42,7 +46,7 @@ public class WarehouseUtilities {
     }
 
     /*make sure you check for null when you use this!*/
-    public static Warehouse getClosestWarehouse(Building building, Collection<Warehouse> warehouses){
+    public Warehouse getClosestWarehouse(Building building, Collection<Warehouse> warehouses){
         if(building == null || warehouses == null || warehouses.isEmpty()){
             return null;
         }
@@ -59,7 +63,7 @@ public class WarehouseUtilities {
     }
 
 
-    public static Map<Warehouse, Building> getTargetsForWarehouses(List<Building> possibleTargets, List<Warehouse> myWarehouses, int bribesToSpend){
+    public Map<Warehouse, Building> getTargetsForWarehouses(List<Building> possibleTargets, List<Warehouse> myWarehouses, int bribesToSpend){
         Map<Warehouse, Building> targetsForWarehouses = new HashMap<>();
         if(myWarehouses == null || possibleTargets == null || bribesToSpend == 0){
             return new HashMap<>();
@@ -78,5 +82,16 @@ public class WarehouseUtilities {
             }
         }
         return targetsForWarehouses;
+    }
+
+    public Set<Warehouse> getBribeableWarehouses() {
+        Set<Warehouse> bribeableWarehouses = new HashSet<>();
+        for (Warehouse w : player.warehouses) {
+            if (w.health > 0 && !w.bribed) {
+                bribeableWarehouses.add(w);
+            }
+        }
+
+        return bribeableWarehouses;
     }
 }

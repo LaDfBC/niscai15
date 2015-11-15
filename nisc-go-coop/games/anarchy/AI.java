@@ -12,6 +12,7 @@ import games.anarchy.Strategy.Building.WarehouseUtilities;
 import games.anarchy.Strategy.Building.WeatherStationUtilities;
 import games.anarchy.Strategy.Heuristic.WeatherOffsense;
 import joueur.BaseAI;
+
 // <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 // you can add addtional import(s) here
 // <<-- /Creer-Merge: imports -->>
@@ -39,6 +40,9 @@ public class AI extends BaseAI {
     List<Warehouse> myAttackers;
     List<Warehouse> enemyAttackers;
 
+    WarehouseUtilities warehouseUtilities;
+    WeatherStationUtilities weatherStationUtilities;
+    EnemyHeadquartersUtilities enemyHeadquartersUtilities;
     // <<-- /Creer-Merge: fields -->>
 
 
@@ -48,7 +52,7 @@ public class AI extends BaseAI {
      */
     public String getName() {
         // <<-- Creer-Merge: get-name -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        return "NISC - GO COOP"; // REPLACE THIS WITH YOUR TEAM NAME!
+        return "NISC - GO COOP - GEORGE"; // REPLACE THIS WITH YOUR TEAM NAME!
         // <<-- /Creer-Merge: get-name -->>
     }
 
@@ -72,6 +76,10 @@ public class AI extends BaseAI {
                 break;
             }
         }
+        System.out.println("ONE!");
+        warehouseUtilities = new WarehouseUtilities(player);
+        weatherStationUtilities = new WeatherStationUtilities(player, game);
+        enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
         // <<-- /Creer-Merge: start -->>
     }
 
@@ -101,6 +109,10 @@ public class AI extends BaseAI {
 
     }
 
+    public void georgeFiddle() {
+        igniteOneBuildingCloseToHQ();
+    }
+
     public void joeFiddle(){
         EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
 
@@ -117,7 +129,7 @@ public class AI extends BaseAI {
             List<Warehouse> myAttackers = player.warehouses;
 
             while (player.bribesRemaining > 0) {
-                Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(enemyEhqNeighbor, myAttackers);
+                Warehouse myAttacker = warehouseUtilities.getClosestWarehouse(enemyEhqNeighbor, myAttackers);
                 if(myAttacker != null){
                     myAttacker.ignite(enemyEhqNeighbor);
                     myAttackers.remove(myAttacker);
@@ -163,12 +175,7 @@ public class AI extends BaseAI {
             }
         }
 
-        Set<Warehouse> bribeableWarehouses = new HashSet<>();
-        for (Warehouse w : player.warehouses) {
-            if (w.health > 0 && !w.bribed) {
-                bribeableWarehouses.add(w);
-            }
-        }
+        Set<Warehouse> bribeableWarehouses = warehouseUtilities.getBribeableWarehouses();
 
         //ignite
         int numTurns = numBuildings;
@@ -176,7 +183,7 @@ public class AI extends BaseAI {
             if (!closeEnemies.isEmpty()) {
                 Building buildingToFire = closeEnemies.poll();
                 //get the closest warehouse to this building that is still usable
-                Warehouse whToAttackWIth = WarehouseUtilities.getClosestWarehouse(buildingToFire, bribeableWarehouses);
+                Warehouse whToAttackWIth = warehouseUtilities.getClosestWarehouse(buildingToFire, bribeableWarehouses);
                 if (whToAttackWIth != null && player.bribesRemaining > 0) {
                     whToAttackWIth.ignite(buildingToFire);
                     bribeableWarehouses.remove(whToAttackWIth);
@@ -186,8 +193,73 @@ public class AI extends BaseAI {
         }
     }
 
+    public Building igniteOneBuildingCloseToHQ() {
+//        return enemyHeadquarters;
+        //If we go on turn two, we want to NOT blow in the same direction the other dude is blowing
+        // We'd ALSO like to ignite the fire he's (probably) going to fan in our face
+
+        //For now, choose randomly
+        Map<Building, WeatherStationUtilities.CardinalDirection> buildings = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
+        String nextDirection = weatherStationUtilities.getNextWeather().direction;
+
+        Map.Entry<Building, WeatherStationUtilities.CardinalDirection> cardinalBuilding = buildings.entrySet().iterator().next();
+        boolean directionNeedsChanging = true;
+        for (Map.Entry<Building, WeatherStationUtilities.CardinalDirection> currentBuilding : buildings.entrySet()) {
+            if (weatherStationUtilities.isWeatherOpposite(cardinalBuilding.getValue().name(), nextDirection)) {
+                directionNeedsChanging = false;
+                cardinalBuilding = currentBuilding;
+                break;
+            }
+            System.out.println(1);
+        }
+
+//        List<Building> oneBuilding = enemyHeadquarters.getBuildingsWithinDistance(1);
+
+//        Building targetBuilding = oneBuilding.get(0);
+
+        Set<Warehouse> bribeableWarehouses = warehouseUtilities.getBribeableWarehouses();
+
+        while(cardinalBuilding.getKey().fire < 10) {
+            Warehouse attacker = warehouseUtilities.getClosestWarehouse(cardinalBuilding.getKey(), bribeableWarehouses);
+            if(attacker != null && player.bribesRemaining > 0) {
+                attacker.ignite(cardinalBuilding.getKey());
+                bribeableWarehouses.remove(attacker);
+            }
+            System.out.println(2);
+        }
+
+
+        while(player.bribesRemaining > 0 && directionNeedsChanging && weatherStationUtilities.getNextBribeableWeatherStation() != null) {
+             WeatherStationUtilities.WeatherDirection direction = weatherStationUtilities.getDirection(weatherStationUtilities.getNextWeather().direction,
+                    weatherStationUtilities.getOppositeOf(cardinalBuilding.getValue()));
+            if(direction.equals(WeatherStationUtilities.WeatherDirection.Backward)) {
+                weatherStationUtilities.getNextBribeableWeatherStation().rotate();
+            } else if(direction.equals(WeatherStationUtilities.WeatherDirection.Clockwise)) {
+                weatherStationUtilities.getNextBribeableWeatherStation().rotate();
+                directionNeedsChanging = false;
+            } else if (direction.equals(WeatherStationUtilities.WeatherDirection.CounterClockwise)) {
+                weatherStationUtilities.getNextBribeableWeatherStation().rotate(true);
+                directionNeedsChanging = false;
+            }
+            System.out.println(3);
+        }
+
+        while(player.bribesRemaining > 0 && weatherStationUtilities.getNextWeather().intensity < 10 && weatherStationUtilities.getNextBribeableWeatherStation() != null) {
+            weatherStationUtilities.getNextBribeableWeatherStation().intensify();
+            System.out.println(4);
+        }
+
+        return cardinalBuilding.getKey();
+
+        //Increase other fires around enemy HQ
+
+        //Police spike enemy HQ
+
+        // Check if fire would hurt our HQ and use it the Fire Department to put out fires
+    }
+
     public Boolean attackUsingNearestWarehouse(Building target){
-        Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(target, myAttackers);
+        Warehouse myAttacker = warehouseUtilities.getClosestWarehouse(target, myAttackers);
         if(myAttacker != null){
             player.log(myAttacker.id + " : " + target.id);
             myAttacker.ignite(target);
@@ -202,10 +274,12 @@ public class AI extends BaseAI {
      * @return represents if you want to end your turn. true means end the turn, false means to keep your turn going and re-call runTurn()
      */
     public boolean runTurn() {
-        myAttackers = WarehouseUtilities.getHealthyAndUnbribed(player.warehouses);
-        enemyAttackers =  WarehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
+        myAttackers = warehouseUtilities.getHealthyAndUnbribed(player.warehouses);
+        enemyAttackers =  warehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
         //joeFiddle();
-        jeffWeather2();
+//        jeffWeather2();
+//        jeffWeather();
+        georgeFiddle();
 
 
 //        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -266,7 +340,7 @@ public class AI extends BaseAI {
     }
 
     public void igniteTargetsUsingClosestWarehouses(List<Building> targets, List<Warehouse> myWarehouses, int bribesToSpend){
-        Map<Warehouse, Building> targetsForWarehouses = WarehouseUtilities.getTargetsForWarehouses(targets, myWarehouses, bribesToSpend);
+        Map<Warehouse, Building> targetsForWarehouses = warehouseUtilities.getTargetsForWarehouses(targets, myWarehouses, bribesToSpend);
         for(Map.Entry<Warehouse, Building> entry : targetsForWarehouses.entrySet()){
             entry.getKey().ignite(entry.getValue());
         }
