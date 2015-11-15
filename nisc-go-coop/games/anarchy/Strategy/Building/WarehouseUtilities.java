@@ -14,8 +14,8 @@ public class WarehouseUtilities {
         return Math.abs(ignitingWarehouse.x - buildingToBurn.x) + Math.abs(ignitingWarehouse.y - buildingToBurn.y);
     }
 
-    public static Warehouse getClosestWarehouse(@NonNull Building building, @NonNull List<Warehouse> warehouses){
-        if(warehouses.isEmpty()){
+    public static Warehouse getClosestWarehouse(Building building, List<Warehouse> warehouses){
+        if(building == null || warehouses == null || warehouses.isEmpty()){
             return null;
         }
         Warehouse closest = warehouses.get(0);
@@ -26,5 +26,4 @@ public class WarehouseUtilities {
         }
         return closest;
     }
-
 }

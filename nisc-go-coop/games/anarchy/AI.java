@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 import com.sun.org.apache.xml.internal.serializer.utils.WrappedRuntimeException;
+import games.anarchy.Strategy.Building.EnemyHeadquartersUtilities;
+import games.anarchy.Strategy.Building.WarehouseUtilities;
 import joueur.BaseAI;
 // <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 // you can add addtional import(s) here
@@ -100,6 +102,20 @@ public class AI extends BaseAI {
      * @return represents if you want to end your turn. true means end the turn, false means to keep your turn going and re-call runTurn()
      */
     public boolean runTurn() {
+        /*JOE FIDDLE*/
+        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
+
+        Building enemyEhqNeighbor = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors().get(0);
+        List<Warehouse> myAttackers = player.warehouses;
+
+        while(player.bribesRemaining > 0){
+            Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(enemyEhqNeighbor, player.warehouses);
+            myAttacker.ignite(enemyEhqNeighbor);
+            myAttackers.remove(myAttacker);
+        }
+        /*JOE FIDDLE*/
+
+
         // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         // Put your game logic here for runTurn
 
