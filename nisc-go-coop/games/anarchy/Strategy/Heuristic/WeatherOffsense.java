@@ -111,10 +111,10 @@ public class WeatherOffsense {
         if (maxDamage > 0) {
             int amountToInc = maxPointsToChangeWeather;
             amountToInc = Math.min(stationStack.size(), amountToInc);
-            amountToInc = Math.min(10-game.currentForecast.intensity, amountToInc);
+            amountToInc = Math.min(10-game.nextForecast.intensity, amountToInc);
             amountToInc = Math.min(player.bribesRemaining, amountToInc);
             for (int i = 0; i < amountToInc; i++) {
-                if (game.currentForecast.intensity < 10) {
+                if (game.nextForecast.intensity < 10) {
                     WeatherStation ws = stationStack.pop();
                     ws.intensify();
                 }
@@ -124,10 +124,10 @@ public class WeatherOffsense {
             //change the wind to minimize the pain
             int amountToDec = maxPointsToChangeWeather;
             amountToDec = Math.min(stationStack.size(), amountToDec);
-            amountToDec = Math.min(game.currentForecast.intensity, amountToDec);
+            amountToDec = Math.min(game.nextForecast.intensity, amountToDec);
             amountToDec = Math.min(player.bribesRemaining, amountToDec);
             for (int i = 0; i < amountToDec; i++) {
-                if (game.currentForecast.intensity > 0) {
+                if (game.nextForecast.intensity > 0) {
                     WeatherStation ws = stationStack.pop();
                     ws.intensify(true);
                 }
