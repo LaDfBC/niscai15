@@ -111,19 +111,40 @@ public class AI extends BaseAI {
 
     }
 
+    public Map<Integer, Warehouse> sortMapByKey(Map<Integer, Warehouse> toSort){
+    }
+
     public void joeFiddle(){
         System.out.println("TURN: " + game.currentTurn);
 
         Stack<Warehouse> killableWarehouses = policeDepartmentUtilities.canKill(player.otherPlayer.warehouses);
+
         for(PoliceDepartment policeDepartment : player.policeDepartments){
             if(player.bribesRemaining < 1){
                 return;
             }
             if(!policeDepartment.bribed && policeDepartment.health > 0){
                 if(killableWarehouses != null && !killableWarehouses.isEmpty()) {
-                    System.out.println("  raiding");
+                    System.out.println("  raiding and killing");
                     Warehouse targetWarehouse = killableWarehouses.pop();
                     policeDepartment.raid(targetWarehouse);
+                }
+
+            }
+        }
+
+        Map<Integer, Warehouse> dmgRequiredToKill = policeDepartmentUtilities.fireRequiredToBurnAfterRaid(player.otherPlayer.warehouses);
+        TreeSet<Integer> treeSet = new TreeSet<>(dmgRequiredToKill.keySet());
+        Iterator<Integer> keyIter = treeSet.iterator();
+        while(keyIter.hasNext()){
+            if(player.bribesRemaining < 1){
+                return;
+            }
+            Warehouse target = dmgRequiredToKill.get(keyIter.next());
+            for(Warehouse attacker : player.warehouses){
+                if(attacker.health > 0 && !attacker.bribed){
+                    System.out.println(" raiding to weaken");
+                    attacker.ignite(target);
                 }
             }
         }
