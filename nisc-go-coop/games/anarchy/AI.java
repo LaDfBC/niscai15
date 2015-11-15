@@ -114,6 +114,20 @@ public class AI extends BaseAI {
     public void joeFiddle(){
         System.out.println("TURN: " + game.currentTurn + "\n");
 
+        Stack<Warehouse> killableWarehouses = policeDepartmentUtilities.canKill(player.otherPlayer.warehouses);
+        for(PoliceDepartment policeDepartment : player.policeDepartments){
+            if(player.bribesRemaining < 1){
+                return;
+            }
+            if(!policeDepartment.bribed && policeDepartment.health > 0){
+                if(killableWarehouses != null && !killableWarehouses.isEmpty()) {
+                    Warehouse targetWarehouse = killableWarehouses.pop();
+                    policeDepartment.raid(killableWarehouses.pop());
+                    System.out.println("  raiding");
+                }
+            }
+        }
+
         Building target = friendlyHqStrat.getClosestBuildingAdjacentToEnemyHqIfExposureIsLessThan(10000);
         if(target != null){
             player.headquarters.ignite(target);
@@ -129,17 +143,6 @@ public class AI extends BaseAI {
                     }
                 }else{
                     return;
-                }
-            }
-            Stack<Warehouse> killableEnemies = policeDepartmentUtilities.canKill(player.otherPlayer.warehouses);
-            for(PoliceDepartment policeDepartment : player.policeDepartments){
-                if(player.bribesRemaining < 1){
-                    return;
-                }
-                if(!policeDepartment.bribed && policeDepartment.health > 0){
-                    if(killableEnemies != null && !killableEnemies.isEmpty()) {
-                        policeDepartment.raid(killableEnemies.pop());
-                    }
                 }
             }
         }
