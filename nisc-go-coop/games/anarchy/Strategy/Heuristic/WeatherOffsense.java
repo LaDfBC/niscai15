@@ -13,7 +13,7 @@ import java.util.Stack;
  */
 public class WeatherOffsense {
     public static final int FRIENDLY_HQ_DAMAGE_WEIGHT = 5;
-    public static final int ENEMY_HQ_DAMAGE_WEIGHT = 5;
+    public static final int ENEMY_HQ_DAMAGE_WEIGHT = 7;
 
 
     //This is our player
@@ -95,6 +95,9 @@ public class WeatherOffsense {
             } else {
                 ws.rotate(true);
             }
+        } else if (maxDir == WeatherStationUtilities.WeatherDirection.Backward) {
+            stationStack.pop().rotate();
+            stationStack.pop().rotate();
         }
 
         if (player.bribesRemaining == 0) {
