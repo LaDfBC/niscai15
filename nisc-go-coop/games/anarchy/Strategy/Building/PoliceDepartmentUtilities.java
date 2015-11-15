@@ -23,8 +23,8 @@ public class PoliceDepartmentUtilities {
      * @param enemyWarehouses
      * @return
      */
-    public List<Warehouse> canKill(List<games.anarchy.Warehouse> enemyWarehouses) {
-        List<Warehouse> killableWarehouses = new ArrayList<>();
+    public Stack<Warehouse> canKill(List<games.anarchy.Warehouse> enemyWarehouses) {
+        Stack<Warehouse> killableWarehouses = new Stack<>();
         for(Warehouse warehouse : enemyWarehouses) {
             if((warehouse.health < (warehouse.exposure + warehouse.fire)) && warehouse.health > 0) {
                 killableWarehouses.add(warehouse);
@@ -33,6 +33,7 @@ public class PoliceDepartmentUtilities {
 
         return killableWarehouses;
     }
+
 
     public Map<Integer, Warehouse> fireRequiredToBurnAfterRaid(List<Warehouse> enemyWarehouses) {
         Map<Integer, Warehouse> fireRequiredMap = new HashMap<>();

@@ -6,10 +6,7 @@ package games.anarchy;
 
 import java.util.*;
 
-import games.anarchy.Strategy.Building.BuildingUtilities;
-import games.anarchy.Strategy.Building.EnemyHeadquartersUtilities;
-import games.anarchy.Strategy.Building.WarehouseUtilities;
-import games.anarchy.Strategy.Building.WeatherStationUtilities;
+import games.anarchy.Strategy.Building.*;
 import games.anarchy.Strategy.Heuristic.FriendlyHeadquartersStrategy;
 import games.anarchy.Strategy.Heuristic.WeatherOffsense;
 import joueur.BaseAI;
@@ -43,6 +40,7 @@ public class AI extends BaseAI {
     WeatherStationUtilities weatherStationUtilities;
     EnemyHeadquartersUtilities enemyHeadquartersUtilities;
     FriendlyHeadquartersStrategy friendlyHqStrat;
+    PoliceDepartmentUtilities policeDepartmentUtilities;
 
 
     // <<-- /Creer-Merge: fields -->>
@@ -54,7 +52,7 @@ public class AI extends BaseAI {
      */
     public String getName() {
         // <<-- Creer-Merge: get-name -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        return "NISC - GO COOP - JOE FIDDLE WITH WEATHER"; // REPLACE THIS WITH YOUR TEAM NAME!
+        return "NISC - GO COOP - JOE FIDDLE WITH WEATHER AND POLICE"; // REPLACE THIS WITH YOUR TEAM NAME!
         // <<-- /Creer-Merge: get-name -->>
     }
 
@@ -81,6 +79,7 @@ public class AI extends BaseAI {
         warehouseUtilities = new WarehouseUtilities(player, game);
         weatherStationUtilities = new WeatherStationUtilities(player, game);
         enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
+        policeDepartmentUtilities = new PoliceDepartmentUtilities(player.policeDepartments, enemyHeadquartersUtilities);
         friendlyHqStrat = new FriendlyHeadquartersStrategy(player,game);
 
         // <<-- /Creer-Merge: start -->>
@@ -130,6 +129,15 @@ public class AI extends BaseAI {
                     }
                 }else{
                     return;
+                }
+            }
+            Stack<Warehouse> killableEnemies = policeDepartmentUtilities.canKill(player.otherPlayer.warehouses);
+            for(PoliceDepartment policeDepartment : player.policeDepartments){
+                if(player.bribesRemaining < 1){
+                    return;
+                }
+                if(!policeDepartment.bribed && policeDepartment.health > 0){
+                    policeDepartment.raid(killableEnemies.pop());
                 }
             }
         }

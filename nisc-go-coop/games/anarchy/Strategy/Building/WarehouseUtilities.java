@@ -107,7 +107,6 @@ public class WarehouseUtilities {
             ret = target.buildingWest;
         }
         if(ret != null){
-
             System.out.println("  igniting " + oppositeDirection + " of HQ");
         }
         return ret;
