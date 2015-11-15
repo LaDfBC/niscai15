@@ -13,7 +13,7 @@ import java.util.Stack;
  */
 public class WeatherOffsense {
     public static final int FRIENDLY_HQ_DAMAGE_WEIGHT = 5;
-    public static final int ENEMY_HQ_DAMAGE_WEIGHT = 5;
+    public static final int ENEMY_HQ_DAMAGE_WEIGHT = 7;
 
 
     //This is our player
@@ -95,6 +95,9 @@ public class WeatherOffsense {
             } else {
                 ws.rotate(true);
             }
+        } else if (maxDir == WeatherStationUtilities.WeatherDirection.Backward) {
+            stationStack.pop().rotate();
+            stationStack.pop().rotate();
         }
 
         if (player.bribesRemaining == 0) {
@@ -108,22 +111,26 @@ public class WeatherOffsense {
         if (maxDamage > 0) {
             int amountToInc = maxPointsToChangeWeather;
             amountToInc = Math.min(stationStack.size(), amountToInc);
-            amountToInc = Math.min(10-game.currentForecast.intensity, amountToInc);
+            amountToInc = Math.min(10-game.nextForecast.intensity, amountToInc);
             amountToInc = Math.min(player.bribesRemaining, amountToInc);
             for (int i = 0; i < amountToInc; i++) {
-                WeatherStation ws = stationStack.pop();
-                ws.intensify();
+                if (game.nextForecast.intensity < 10) {
+                    WeatherStation ws = stationStack.pop();
+                    ws.intensify();
+                }
             }
         } else {
             //Fuck! this is doing more damage to us
             //change the wind to minimize the pain
             int amountToDec = maxPointsToChangeWeather;
             amountToDec = Math.min(stationStack.size(), amountToDec);
-            amountToDec = Math.min(game.currentForecast.intensity, amountToDec);
+            amountToDec = Math.min(game.nextForecast.intensity, amountToDec);
             amountToDec = Math.min(player.bribesRemaining, amountToDec);
             for (int i = 0; i < amountToDec; i++) {
-                WeatherStation ws = stationStack.pop();
-                ws.intensify(true);
+                if (game.nextForecast.intensity > 0) {
+                    WeatherStation ws = stationStack.pop();
+                    ws.intensify(true);
+                }
             }
         }
     }
