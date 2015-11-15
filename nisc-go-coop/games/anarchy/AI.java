@@ -76,7 +76,6 @@ public class AI extends BaseAI {
                 break;
             }
         }
-        System.out.println("ONE!");
         warehouseUtilities = new WarehouseUtilities(player);
         weatherStationUtilities = new WeatherStationUtilities(player, game);
         enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
@@ -210,7 +209,6 @@ public class AI extends BaseAI {
                 cardinalBuilding = currentBuilding;
                 break;
             }
-            System.out.println(1);
         }
 
 //        List<Building> oneBuilding = enemyHeadquarters.getBuildingsWithinDistance(1);
@@ -225,7 +223,6 @@ public class AI extends BaseAI {
                 attacker.ignite(cardinalBuilding.getKey());
                 bribeableWarehouses.remove(attacker);
             }
-            System.out.println(2);
         }
 
 
@@ -241,12 +238,10 @@ public class AI extends BaseAI {
                 weatherStationUtilities.getNextBribeableWeatherStation().rotate(true);
                 directionNeedsChanging = false;
             }
-            System.out.println(3);
         }
 
         while(player.bribesRemaining > 0 && weatherStationUtilities.getNextWeather().intensity < 10 && weatherStationUtilities.getNextBribeableWeatherStation() != null) {
             weatherStationUtilities.getNextBribeableWeatherStation().intensify();
-            System.out.println(4);
         }
 
         return cardinalBuilding.getKey();
