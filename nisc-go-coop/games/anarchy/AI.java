@@ -123,9 +123,13 @@ public class AI extends BaseAI {
 
             for(WeatherStation weatherStation : player.weatherStations){
                 if(player.bribesRemaining > 0 && intensity < 10){
-                    System.out.println("  intensify");
-                    weatherStation.intensify();
-                    intensity++;
+                    if(weatherStation.health > 0) {
+                        System.out.println("  intensify");
+                        weatherStation.intensify();
+                        intensity++;
+                    }
+                }else{
+                    return;
                 }
             }
         }
