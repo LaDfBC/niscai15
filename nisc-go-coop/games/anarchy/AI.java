@@ -4,14 +4,13 @@
  */
 package games.anarchy;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 import games.anarchy.Strategy.Building.BuildingUtilities;
 import games.anarchy.Strategy.Building.EnemyHeadquartersUtilities;
 import games.anarchy.Strategy.Building.WarehouseUtilities;
+import games.anarchy.Strategy.Building.WeatherStationUtilities;
+import games.anarchy.Strategy.Heuristic.WeatherOffsense;
 import joueur.BaseAI;
 // <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 // you can add addtional import(s) here
@@ -90,7 +89,7 @@ public class AI extends BaseAI {
      * This is automatically called when the game ends.
      * You can do any cleanup of you AI here, or do custom logging. After this function returns the application will close.
      * @param  won  true if your player won, false otherwise
-     * @param  name  reason">a string explaining why you won or lost
+     * @param  reason">a string explaining why you won or lost
      */
     public void ended(boolean won, String reason) {
         // <<-- Creer-Merge: ended -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -103,26 +102,71 @@ public class AI extends BaseAI {
     }
 
     public void joeFiddle(){
-        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
+        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
+        Random random = new Random();
+        int numRandomTargets = random.nextInt(10);
+        List<Building> targets = new ArrayList<>();
+        if(player.otherPlayer.buildings.size() <= numRandomTargets){
+            targets = player.otherPlayer.buildings;
+        }else {
 
-
-        Building target = null;
-        List<Building> ehqNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
-        for(Building enemyneighbor : ehqNeighbors){
-            if(enemyneighbor != null && enemyneighbor.health > 0){
-                target = enemyneighbor;
-                break;
+            while (targets.size() < numRandomTargets) {
+                targets.add(player.otherPlayer.buildings.get(random.nextInt(player.otherPlayer.buildings.size())));
             }
         }
-        if(target == null) {
-            target = enemyAttackers.get(0).isHeadquarters ? enemyAttackers.get(1) : enemyAttackers.get(0);
-
+        if(targets.isEmpty()){
+            return;
+        }else {
+            igniteTargetsUsingClosestWarehouses(targets, myAttackers, player.bribesRemaining);
         }
+
+    }
+
+
+    public void jeffWeather() {
+        WeatherStationUtilities weather = new WeatherStationUtilities(player,game);
+        WeatherOffsense weatherAttack = new WeatherOffsense(player,weather,game);
+        //ignite warehouses closest to their HQ
+        igniteBuildingsCloseToHQ(6, 7);
+
+        //delegate up to 4 turns for the weather
+        weatherAttack.minMaxDamage(3);
         while (player.bribesRemaining > 0) {
-            if(!attackUsingNearestWarehouse(target)){
-                //if we didn't attack anything return, avoiding an infinite loop
-                return;
+            igniteBuildingsCloseToHQ(6, 7);
+        }
+    }
+
+    public void igniteBuildingsCloseToHQ(int numBuildings, int maxDistance) {
+        //ignite warehouses closest to their HQ
+        List<Building> closeBuildings = enemyHeadquarters.getBuildingsWithinDistance(maxDistance);
+
+        Queue<Building> closeEnemies = new ArrayDeque<>();
+        for (Building b : closeBuildings) {
+            if (b.owner != player) {
+                closeEnemies.add(b);
             }
+        }
+
+        Set<Warehouse> bribeableWarehouses = new HashSet<>();
+        for (Warehouse w : player.warehouses) {
+            if (w.health > 0 && !w.bribed) {
+                bribeableWarehouses.add(w);
+            }
+        }
+
+        //ignite
+        int numTurns = numBuildings;
+        while (numTurns > 0) {
+            if (!closeEnemies.isEmpty()) {
+                Building buildingToFire = closeEnemies.poll();
+                //get the closest warehouse to this building that is still usable
+                Warehouse whToAttackWIth = WarehouseUtilities.getClosestWarehouse(buildingToFire, bribeableWarehouses);
+                if (whToAttackWIth != null && player.bribesRemaining > 0) {
+                    whToAttackWIth.ignite(buildingToFire);
+                    bribeableWarehouses.remove(whToAttackWIth);
+                }
+            }
+            numTurns--;
         }
     }
 
@@ -145,6 +189,7 @@ public class AI extends BaseAI {
         myAttackers = WarehouseUtilities.getHealthyAndUnbribed(player.warehouses);
         enemyAttackers =  WarehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
         joeFiddle();
+//        jeffWeather();
 
 
 //        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -204,7 +249,12 @@ public class AI extends BaseAI {
         // <<-- /Creer-Merge: runTurn -->>
     }
 
-
+    public void igniteTargetsUsingClosestWarehouses(List<Building> targets, List<Warehouse> myWarehouses, int bribesToSpend){
+        Map<Warehouse, Building> targetsForWarehouses = WarehouseUtilities.getTargetsForWarehouses(targets, myWarehouses, bribesToSpend);
+        for(Map.Entry<Warehouse, Building> entry : targetsForWarehouses.entrySet()){
+            entry.getKey().ignite(entry.getValue());
+        }
+    }
     // <<-- Creer-Merge: methods -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
     // you can add additional methods here for your AI to call
 

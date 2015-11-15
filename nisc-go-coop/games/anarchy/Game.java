@@ -94,7 +94,7 @@ public class Game extends BaseGame {
 
 
     // <<-- Creer-Merge: fields -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-    // you can add addtional field(s) here. None of them will be tracked or updated by the server.
+    public int WINDMAX = 10;
     // <<-- /Creer-Merge: fields -->>
 
 
