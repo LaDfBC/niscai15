@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.sun.org.apache.xml.internal.serializer.utils.WrappedRuntimeException;
 import joueur.BaseAI;
 // <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 // you can add addtional import(s) here
@@ -29,8 +30,11 @@ public class AI extends BaseAI {
      */
     public Player player;
 
+
+
     // <<-- Creer-Merge: fields -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-    // you can add additional fields here for your AI to use
+    public Warehouse myHeadquarters;
+    public Warehouse enemyHeadquarters;
     // <<-- /Creer-Merge: fields -->>
 
 
@@ -51,6 +55,19 @@ public class AI extends BaseAI {
     public void start() {
         // <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         super.start();
+        for(Warehouse warehouse : player.warehouses) {
+            if(warehouse.isHeadquarters) {
+                myHeadquarters = warehouse;
+                break;
+            }
+        }
+
+        for(Warehouse warehouse : player.otherPlayer.warehouses) {
+            if(warehouse.isHeadquarters) {
+                enemyHeadquarters = warehouse;
+                break;
+            }
+        }
         // <<-- /Creer-Merge: start -->>
     }
 

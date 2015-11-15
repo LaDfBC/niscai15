@@ -1,6 +1,7 @@
 package games.anarchy.Strategy.Building;
 
 import games.anarchy.Building;
+import games.anarchy.Forecast;
 import games.anarchy.Game;
 import games.anarchy.Player;
 
@@ -120,5 +121,9 @@ public class WeatherStationUtilities {
     public List<Building> getBuildingsOnFire() {
         List<Building> onFire = player.buildings.stream().filter(b -> b.fire > 0).collect(Collectors.toList());
         return onFire;
+    }
+
+    public Forecast getNextWeather() {
+        return game.nextForecast;
     }
 }
