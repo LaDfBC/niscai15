@@ -13,6 +13,7 @@ public class WarehouseUtilities {
         return Math.abs(ignitingWarehouse.x - buildingToBurn.x) + Math.abs(ignitingWarehouse.y - buildingToBurn.y);
     }
 
+    /*make sure you check for null when you use this!*/
     public static Warehouse getClosestWarehouse(Building building, List<Warehouse> warehouses){
         if(building == null || warehouses == null || warehouses.isEmpty()){
             return null;

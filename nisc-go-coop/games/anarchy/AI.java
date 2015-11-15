@@ -111,8 +111,10 @@ public class AI extends BaseAI {
 
             while (player.bribesRemaining > 0) {
                 Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(enemyEhqNeighbor, myAttackers);
-                myAttacker.ignite(enemyEhqNeighbor);
-                myAttackers.remove(myAttacker);
+                if(myAttacker != null){
+                    myAttacker.ignite(enemyEhqNeighbor);
+                    myAttackers.remove(myAttacker);
+                }
             }
         }
     }
