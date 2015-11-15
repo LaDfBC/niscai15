@@ -132,8 +132,8 @@ public class AI extends BaseAI {
      * @return represents if you want to end your turn. true means end the turn, false means to keep your turn going and re-call runTurn()
      */
     public boolean runTurn() {
-        myAttackers = (List<Warehouse>) BuildingUtilities.getHealthyAndUnbribed(player.warehouses);
-        enemyAttackers = (List<Warehouse>) BuildingUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
+        myAttackers = WarehouseUtilities.getHealthyAndUnbribed(player.warehouses);
+        enemyAttackers =  WarehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
         joeFiddle();
 
 
