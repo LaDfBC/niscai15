@@ -18,15 +18,15 @@ public class FriendlyHeadquartersStrategy {
     WeatherStationUtilities weatherStationUtilities;
     WarehouseUtilities warehouseUtilities;
 
-    private Building FRIENDLY_EAST_OF_HQ = player.headquarters.buildingEast;
-    private Building FRIENDLY_NORTH_OF_HQ = player.headquarters.buildingNorth;
-    private Building FRIENDLY_SOUTH_OF_HQ = player.headquarters.buildingSouth;
-    private Building FRIENDLY_WEST_OF_HQ = player.headquarters.buildingWest;
+    private Building FRIENDLY_EAST_OF_HQ;
+    private Building FRIENDLY_NORTH_OF_HQ;
+    private Building FRIENDLY_SOUTH_OF_HQ;
+    private Building FRIENDLY_WEST_OF_HQ;
 
-    private Building ENEMY_EAST_OF_HQ =  player.otherPlayer.headquarters.buildingEast;
-    private Building ENEMY_NORTH_OF_HQ = player.otherPlayer.headquarters.buildingNorth;
-    private Building ENEMY_SOUTH_OF_HQ = player.otherPlayer.headquarters.buildingSouth;
-    private Building ENEMY_WEST_OF_HQ =  player.otherPlayer.headquarters.buildingWest;
+    private Building ENEMY_EAST_OF_HQ;
+    private Building ENEMY_NORTH_OF_HQ;
+    private Building ENEMY_SOUTH_OF_HQ;
+    private Building ENEMY_WEST_OF_HQ;
 
 
     public FriendlyHeadquartersStrategy(Player player, Game game) {
@@ -37,6 +37,14 @@ public class FriendlyHeadquartersStrategy {
         //todo: this should look at building nearest to warehouse, but close enough
         this.distanceFromEnemyHq = warehouseUtilities.exposureAddedToIgnite(player.headquarters, player.otherPlayer.headquarters);
         this.enemyRaidThreshold = Integer.MAX_VALUE;
+        this.FRIENDLY_EAST_OF_HQ = player.headquarters.buildingEast;
+        this.FRIENDLY_NORTH_OF_HQ = player.headquarters.buildingNorth;
+        this.FRIENDLY_SOUTH_OF_HQ = player.headquarters.buildingSouth;
+        this.FRIENDLY_WEST_OF_HQ = player.headquarters.buildingWest;
+        this.ENEMY_EAST_OF_HQ =  player.otherPlayer.headquarters.buildingEast;
+        this.ENEMY_NORTH_OF_HQ = player.otherPlayer.headquarters.buildingNorth;
+        this.ENEMY_SOUTH_OF_HQ = player.otherPlayer.headquarters.buildingSouth;
+        this.ENEMY_WEST_OF_HQ =  player.otherPlayer.headquarters.buildingWest;
     }
 
     //returns null if no targets exist
