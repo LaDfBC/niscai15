@@ -71,7 +71,7 @@ public class WeatherOffsense {
         List<WeatherStation> weatherStations = player.weatherStations;
         Stack<WeatherStation> stationStack = new Stack<>();
         for (WeatherStation ws : weatherStations) {
-            if (!ws.bribed) {
+            if (!ws.bribed && ws.health > 0) {
                 stationStack.push(ws);
             }
         }
@@ -93,6 +93,8 @@ public class WeatherOffsense {
             return;
         }
 
+
+        //ToDo: check if we might destroy our HQ in the process
         //if we will do more damage than them,
         //rotate the weather and increase the intensity!
         if (maxDamage > 0) {
