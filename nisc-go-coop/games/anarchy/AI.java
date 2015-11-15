@@ -12,6 +12,7 @@ import java.util.HashMap;
 import games.anarchy.Strategy.Building.BuildingUtilities;
 import games.anarchy.Strategy.Building.EnemyHeadquartersUtilities;
 import games.anarchy.Strategy.Building.WarehouseUtilities;
+import games.anarchy.Strategy.Building.WeatherStationUtilities;
 import joueur.BaseAI;
 // <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 // you can add addtional import(s) here
@@ -98,15 +99,19 @@ public class AI extends BaseAI {
         // <<-- /Creer-Merge: ended -->>
     }
 
+    public void weatherFiddle() {
+
+    }
+
     public void joeFiddle(){
-        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
+        EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
 
 
         Building target = null;
-        List<Building> ehqNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
-        for(Building enemyneighbor : ehqNeighbors){
-            if(enemyneighbor != null && enemyneighbor.health > 0){
-                target = enemyneighbor;
+        Map<Building, WeatherStationUtilities.CardinalDirection> ehqNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
+        for(Map.Entry<Building, WeatherStationUtilities.CardinalDirection> enemyneighbor : ehqNeighbors.entrySet()){
+            if(enemyneighbor != null && enemyneighbor.getKey().health > 0){
+                target = enemyneighbor.getKey();
                 break;
             }
         }
@@ -115,17 +120,22 @@ public class AI extends BaseAI {
 
         }
         while (player.bribesRemaining > 0) {
-            attackUsingNearestWarehouse(target);
+            if(!attackUsingNearestWarehouse(target)){
+                //if we didn't attack anything return, avoiding an infinite loop
+                return;
+            }
         }
     }
 
-    public void attackUsingNearestWarehouse(Building target){
+    public Boolean attackUsingNearestWarehouse(Building target){
         Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(target, myAttackers);
         if(myAttacker != null){
             player.log(myAttacker.id + " : " + target.id);
             myAttacker.ignite(target);
             myAttackers.remove(myAttacker);
+            return true;
         }
+        return false;
     }
     /**
      * This is called every time the AI is asked to respond with a command during their turn

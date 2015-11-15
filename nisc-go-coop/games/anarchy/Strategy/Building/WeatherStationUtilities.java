@@ -139,4 +139,70 @@ public class WeatherStationUtilities {
     public Forecast getNextWeather() {
         return game.nextForecast;
     }
+
+    public boolean isWeatherOpposite(String current, String desired) {
+        if(current.equals("west") && desired.equals("east")) {
+            return true;
+        }
+        if(current.equals("east") && desired.equals("west")) {
+            return true;
+        }
+        if(current.equals("north") && desired.equals("south")) {
+            return true;
+        }
+        if(current.equals("south") && desired.equals("north")) {
+            return true;
+        }
+        return false;
+    }
+
+    public WeatherDirection getDirection(String current, String desired) {
+        if(current.equals("north")) {
+            if(desired.equals("east")) {
+                return WeatherDirection.Clockwise;
+            }
+            if(desired.equals("west")) {
+                return WeatherDirection.CounterClockwise;
+            }
+            if(desired.equals("south")) {
+                return WeatherDirection.Backward;
+            }
+            return WeatherDirection.Forward;
+        } else if(current.equals("south")) {
+            if(desired.equals("west")) {
+                return WeatherDirection.Clockwise;
+            }
+            if(desired.equals("east")) {
+                return WeatherDirection.CounterClockwise;
+            }
+            if(desired.equals("north")) {
+                return WeatherDirection.Backward;
+            }
+            return WeatherDirection.Forward;
+        } else if(current.equals("east")) {
+            if(desired.equals("south")) {
+                return WeatherDirection.Clockwise;
+            }
+            if(desired.equals("north")) {
+                return WeatherDirection.CounterClockwise;
+            }
+            if(desired.equals("west")) {
+                return WeatherDirection.Backward;
+            }
+            return WeatherDirection.Forward;
+        } else if(current.equals("west")) {
+            if(desired.equals("north")) {
+                return WeatherDirection.Clockwise;
+            }
+            if(desired.equals("south")) {
+                return WeatherDirection.CounterClockwise;
+            }
+            if(desired.equals("east")) {
+                return WeatherDirection.Backward;
+            }
+            return WeatherDirection.Forward;
+        }
+
+        return null; // Shouldn't happen
+    }
 }
