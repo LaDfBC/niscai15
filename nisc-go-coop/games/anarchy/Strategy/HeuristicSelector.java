@@ -23,7 +23,7 @@ public class HeuristicSelector {
 
     public HeuristicSelector(Player player, Game game) {
         enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(player.otherPlayer.headquarters, game);
-        policeDepartmentUtilities = new PoliceDepartmentUtilities(player.policeDepartments);
+        policeDepartmentUtilities = new PoliceDepartmentUtilities(player.policeDepartments, enemyHeadquartersUtilities);
         weatherStationUtilities = new WeatherStationUtilities(player, game);
         this.player = player;
         this.game = game;
@@ -46,6 +46,7 @@ public class HeuristicSelector {
             }
 
             //SURVIVOR: Are we about to die a preventable death? Stay alive!
+//            if (myHeadquarters.health < myHeadquarters.fire && )
 
             //FIRE: Light stuff on fire.
 
