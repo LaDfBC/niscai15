@@ -172,7 +172,6 @@ public class AI extends BaseAI {
                         while(keyIter.hasNext()) {
                             enemyWarehouse = dmgRequiredToKill.get(keyIter.next());
                             if(enemyWarehouse.fire < 10 && !enemyWarehouse.isHeadquarters){
-                                System.out.println("switched target");
                                 break;
                             }
                         }
