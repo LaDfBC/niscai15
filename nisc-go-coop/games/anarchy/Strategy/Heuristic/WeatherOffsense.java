@@ -4,7 +4,6 @@ import games.anarchy.Game;
 import games.anarchy.Player;
 import games.anarchy.Strategy.Building.WeatherStationUtilities;
 import games.anarchy.WeatherStation;
-import javafx.util.Pair;
 
 import java.util.List;
 import java.util.Stack;
@@ -28,6 +27,16 @@ public class WeatherOffsense {
         this.game = game;
     }
 
+    protected class FriendlyEnemyDmg {
+        protected final int friendlyDmg;
+        protected final int enemyDmg;
+
+        public FriendlyEnemyDmg(int friendlyDmg, int enemyDmg) {
+            this.friendlyDmg = friendlyDmg;
+            this.enemyDmg = enemyDmg;
+        }
+    }
+
     /**
      *
      * @param maxPointsToChangeWeather The maximum number of points we will try to change the weather (up or down)
@@ -37,22 +46,22 @@ public class WeatherOffsense {
         // their buildings while minimizing the amount of damage done to our own
 
         //First case, if none of the directions are better for us than them, decrease the weather
-        Pair<Integer,Integer> noDirectionChange = getFriendlyEnemyDamage(WeatherStationUtilities.WeatherDirection.Forward);
-        Pair<Integer,Integer> clockwise = getFriendlyEnemyDamage(WeatherStationUtilities.WeatherDirection.Clockwise);
-        Pair<Integer,Integer> counterClockwise = getFriendlyEnemyDamage(WeatherStationUtilities.WeatherDirection.CounterClockwise);
+        FriendlyEnemyDmg noDirectionChange = getFriendlyEnemyDamage(WeatherStationUtilities.WeatherDirection.Forward);
+        FriendlyEnemyDmg clockwise = getFriendlyEnemyDamage(WeatherStationUtilities.WeatherDirection.Clockwise);
+        FriendlyEnemyDmg counterClockwise = getFriendlyEnemyDamage(WeatherStationUtilities.WeatherDirection.CounterClockwise);
 
         //find the one with the largest difference between their damage and our damage
-        int maxDamage = noDirectionChange.getValue()-noDirectionChange.getKey();
+        int maxDamage = noDirectionChange.enemyDmg-noDirectionChange.friendlyDmg;
         WeatherStationUtilities.WeatherDirection maxDir = WeatherStationUtilities.WeatherDirection.Forward;
 
 
-        int diffClockwise = clockwise.getValue()-clockwise.getKey();
+        int diffClockwise = clockwise.enemyDmg-clockwise.friendlyDmg;
         if (diffClockwise > maxDamage) {
             maxDamage = diffClockwise;
             maxDir = WeatherStationUtilities.WeatherDirection.Clockwise;
         }
 
-        int diffCounterClockwise = counterClockwise.getValue()-counterClockwise.getKey();
+        int diffCounterClockwise = counterClockwise.enemyDmg-counterClockwise.friendlyDmg;
         if (diffCounterClockwise > maxDamage) {
             maxDamage = diffCounterClockwise;
             maxDir = WeatherStationUtilities.WeatherDirection.CounterClockwise;
@@ -110,11 +119,11 @@ public class WeatherOffsense {
     }
 
 
-    public Pair<Integer,Integer> getFriendlyEnemyDamage(WeatherStationUtilities.WeatherDirection direction) {
+    public FriendlyEnemyDmg getFriendlyEnemyDamage(WeatherStationUtilities.WeatherDirection direction) {
         List<WeatherStationUtilities.FireAdded> fireAdded = weather.getFireAddedForDirection(direction);
         int friendlyDmg = evaluateFriendlyFire(fireAdded);
         int enemyDmg = evaluateEnemyFire(fireAdded);
-        return new Pair<>(friendlyDmg,enemyDmg);
+        return new FriendlyEnemyDmg(friendlyDmg,enemyDmg);
     }
 
     /**
