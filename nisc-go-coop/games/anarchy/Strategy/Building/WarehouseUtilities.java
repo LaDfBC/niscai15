@@ -3,6 +3,7 @@ package games.anarchy.Strategy.Building;
 import games.anarchy.Building;
 import games.anarchy.Warehouse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +13,8 @@ public class WarehouseUtilities {
     public static int exposureAddedToIgnite(Warehouse ignitingWarehouse, Building buildingToBurn) {
         return Math.abs(ignitingWarehouse.x - buildingToBurn.x) + Math.abs(ignitingWarehouse.y - buildingToBurn.y);
     }
+
+
 
     /*make sure you check for null when you use this!*/
     public static Warehouse getClosestWarehouse(Building building, List<Warehouse> warehouses){
