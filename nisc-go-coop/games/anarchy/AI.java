@@ -140,6 +140,18 @@ public class AI extends BaseAI {
         }
     }
 
+
+    public void jeffWeather2() {
+        WeatherStationUtilities weather = new WeatherStationUtilities(player,game);
+        WeatherOffsense weatherAttack = new WeatherOffsense(player,weather,game);
+
+        igniteBuildingsCloseToHQ(4,1);
+        weatherAttack.minMaxDamage(6);
+        while (player.bribesRemaining > 0) {
+            igniteBuildingsCloseToHQ(4,1);
+        }
+    }
+
     public void igniteBuildingsCloseToHQ(int numBuildings, int maxDistance) {
         //ignite warehouses closest to their HQ
         List<Building> closeBuildings = enemyHeadquarters.getBuildingsWithinDistance(maxDistance);
@@ -193,7 +205,7 @@ public class AI extends BaseAI {
         myAttackers = WarehouseUtilities.getHealthyAndUnbribed(player.warehouses);
         enemyAttackers =  WarehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
         //joeFiddle();
-        jeffWeather();
+        jeffWeather2();
 
 
 //        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
