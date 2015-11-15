@@ -149,6 +149,12 @@ public class AI extends BaseAI {
             }
         }
 
+        burn();
+
+
+    }
+
+    public void burn(){
         Map<Integer, Warehouse> dmgRequiredToKill = policeDepartmentUtilities.fireRequiredToBurnAfterRaid(player.otherPlayer.warehouses);
         TreeSet<Integer> treeSet = new TreeSet<>(dmgRequiredToKill.keySet());
         Iterator<Integer> keyIter = treeSet.iterator();
@@ -164,12 +170,15 @@ public class AI extends BaseAI {
                 if(attacker.health > 0 && !attacker.bribed){
                     System.out.println(" burning");
                     attacker.ignite(enemyWarehouse);
+                    if(enemyWarehouse.health < 15){
+                        if(keyIter.hasNext()) {
+                            enemyWarehouse = dmgRequiredToKill.get(keyIter.next());
+                        }
+                    }
                 }
             }
         }
-
     }
-
 
     public void jeffWeather() {
         WeatherStationUtilities weather = new WeatherStationUtilities(player,game);
