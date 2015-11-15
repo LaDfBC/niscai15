@@ -111,8 +111,10 @@ public class WeatherOffsense {
             amountToInc = Math.min(10-game.currentForecast.intensity, amountToInc);
             amountToInc = Math.min(player.bribesRemaining, amountToInc);
             for (int i = 0; i < amountToInc; i++) {
-                WeatherStation ws = stationStack.pop();
-                ws.intensify();
+                if (game.currentForecast.intensity < 10) {
+                    WeatherStation ws = stationStack.pop();
+                    ws.intensify();
+                }
             }
         } else {
             //Fuck! this is doing more damage to us
@@ -122,8 +124,10 @@ public class WeatherOffsense {
             amountToDec = Math.min(game.currentForecast.intensity, amountToDec);
             amountToDec = Math.min(player.bribesRemaining, amountToDec);
             for (int i = 0; i < amountToDec; i++) {
-                WeatherStation ws = stationStack.pop();
-                ws.intensify(true);
+                if (game.currentForecast.intensity > 0) {
+                    WeatherStation ws = stationStack.pop();
+                    ws.intensify(true);
+                }
             }
         }
     }
