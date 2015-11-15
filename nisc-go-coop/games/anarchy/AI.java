@@ -148,23 +148,14 @@ public class AI extends BaseAI {
         }
 
         Set<Warehouse> bribeableWarehouses = new HashSet<>();
-        for (Warehouse w : player.warehouses) {
-            if (w.health > 0 && !w.bribed) {
-                bribeableWarehouses.add(w);
-            }
-        }
+        bribeableWarehouses.addAll(WarehouseUtilities.getHealthyAndUnbribed(player.warehouses));
 
         //ignite
         int numTurns = numBuildings;
         while (numTurns > 0) {
             if (!closeEnemies.isEmpty()) {
                 Building buildingToFire = closeEnemies.poll();
-                //get the closest warehouse to this building that is still usable
-                Warehouse whToAttackWIth = WarehouseUtilities.getClosestWarehouse(buildingToFire, bribeableWarehouses);
-                if (whToAttackWIth != null && player.bribesRemaining > 0) {
-                    whToAttackWIth.ignite(buildingToFire);
-                    bribeableWarehouses.remove(whToAttackWIth);
-                }
+                attackUsingNearestWarehouse(buildingToFire);
             }
             numTurns--;
         }
@@ -173,7 +164,6 @@ public class AI extends BaseAI {
     public Boolean attackUsingNearestWarehouse(Building target){
         Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(target, myAttackers);
         if(myAttacker != null){
-            player.log(myAttacker.id + " : " + target.id);
             myAttacker.ignite(target);
             myAttackers.remove(myAttacker);
             return true;
