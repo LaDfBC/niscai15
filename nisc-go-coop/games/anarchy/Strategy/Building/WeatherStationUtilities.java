@@ -118,7 +118,12 @@ public class WeatherStationUtilities {
     }
 
     public List<Building> getBuildingsOnFire() {
-        List<Building> onFire = player.buildings.stream().filter(b -> b.fire > 0).collect(Collectors.toList());
+        List<Building> onFire = new ArrayList<>();
+        for (Building b : game.buildings) {
+            if (b.fire > 0) {
+                onFire.add(b);
+            }
+        }
         return onFire;
     }
 }
