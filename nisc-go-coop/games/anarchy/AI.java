@@ -188,8 +188,8 @@ public class AI extends BaseAI {
     public boolean runTurn() {
         myAttackers = WarehouseUtilities.getHealthyAndUnbribed(player.warehouses);
         enemyAttackers =  WarehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
-        joeFiddle();
-//        jeffWeather();
+//        joeFiddle();
+        jeffWeather();
 
 
 //        // <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
