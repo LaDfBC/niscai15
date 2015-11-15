@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import games.anarchy.Strategy.Building.BuildingUtilities;
 import games.anarchy.Strategy.Building.EnemyHeadquartersUtilities;
 import games.anarchy.Strategy.Building.WarehouseUtilities;
 import joueur.BaseAI;
@@ -36,6 +37,9 @@ public class AI extends BaseAI {
     // <<-- Creer-Merge: fields -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
     public Warehouse myHeadquarters;
     public Warehouse enemyHeadquarters;
+    List<Warehouse> myAttackers;
+    List<Warehouse> enemyAttackers;
+
     // <<-- /Creer-Merge: fields -->>
 
 
@@ -98,33 +102,39 @@ public class AI extends BaseAI {
         EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
 
 
-        Building enemyEhqNeighbor = null;
-        List<Building> enemyHqNeighbor = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
-        for(Building enemyneighbor : enemyHqNeighbor){
+        Building target = null;
+        List<Building> ehqNeighbors = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
+        for(Building enemyneighbor : ehqNeighbors){
             if(enemyneighbor != null && enemyneighbor.health > 0){
-                enemyEhqNeighbor = enemyneighbor;
+                target = enemyneighbor;
                 break;
             }
         }
-        if(enemyEhqNeighbor != null) {
-            List<Warehouse> myAttackers = player.warehouses;
+        if(target == null) {
+            target = enemyAttackers.get(0).isHeadquarters ? enemyAttackers.get(1) : enemyAttackers.get(0);
 
-            while (player.bribesRemaining > 0) {
-                Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(enemyEhqNeighbor, myAttackers);
-                if(myAttacker != null){
-                    myAttacker.ignite(enemyEhqNeighbor);
-                    myAttackers.remove(myAttacker);
-                }
-            }
+        }
+        while (player.bribesRemaining > 0) {
+            attackUsingNearestWarehouse(target);
         }
     }
 
+    public void attackUsingNearestWarehouse(Building target){
+        Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(target, myAttackers);
+        if(myAttacker != null){
+            player.log(myAttacker.id + " : " + target.id);
+            myAttacker.ignite(target);
+            myAttackers.remove(myAttacker);
+        }
+    }
     /**
      * This is called every time the AI is asked to respond with a command during their turn
      *
      * @return represents if you want to end your turn. true means end the turn, false means to keep your turn going and re-call runTurn()
      */
     public boolean runTurn() {
+        myAttackers = WarehouseUtilities.getHealthyAndUnbribed(player.warehouses);
+        enemyAttackers =  WarehouseUtilities.getHealthyAndUnbribed(player.otherPlayer.warehouses);
         joeFiddle();
 
 
