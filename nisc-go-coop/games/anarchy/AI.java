@@ -144,7 +144,7 @@ public class AI extends BaseAI {
                         intensity++;
                     }
                 }else{
-                    return;
+                    break;
                 }
             }
         }
