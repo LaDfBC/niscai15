@@ -27,7 +27,8 @@ public class WeatherStationUtilities {
     public enum WeatherDirection {
         Forward,
         Clockwise,
-        CounterClockwise
+        CounterClockwise,
+        Backward
     }
 
     public enum CardinalDirection {
@@ -54,6 +55,10 @@ public class WeatherStationUtilities {
                 default:
                     return west;
             }
+        }
+
+        public CardinalDirection rotate180() {
+            return getDirectionFromInt(directionInt+2);
         }
 
         public CardinalDirection rotateCounterClockwise() {
@@ -86,6 +91,9 @@ public class WeatherStationUtilities {
         }
         if (direction == WeatherDirection.CounterClockwise) {
             dir = dir.rotateCounterClockwise();
+        }
+        if (direction == WeatherDirection.Backward) {
+            dir = dir.rotate180();
         }
 
         int intensity = game.currentForecast.intensity;

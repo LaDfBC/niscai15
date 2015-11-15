@@ -44,6 +44,18 @@ public class WeatherOffsense {
     public void minMaxDamage(int maxPointsToChangeWeather) {
         //try to maximize the amount of damage we can do to
         // their buildings while minimizing the amount of damage done to our own
+        //first move if we can
+        List<WeatherStation> weatherStations = player.weatherStations;
+        Stack<WeatherStation> stationStack = new Stack<>();
+        for (WeatherStation ws : weatherStations) {
+            if (!ws.bribed && ws.health > 0) {
+                stationStack.push(ws);
+            }
+        }
+
+        if (stationStack.empty() || player.bribesRemaining == 0) {
+            return;
+        }
 
         //First case, if none of the directions are better for us than them, decrease the weather
         FriendlyEnemyDmg noDirectionChange = getFriendlyEnemyDamage(WeatherStationUtilities.WeatherDirection.Forward);
@@ -67,17 +79,13 @@ public class WeatherOffsense {
             maxDir = WeatherStationUtilities.WeatherDirection.CounterClockwise;
         }
 
-        //first move if we can
-        List<WeatherStation> weatherStations = player.weatherStations;
-        Stack<WeatherStation> stationStack = new Stack<>();
-        for (WeatherStation ws : weatherStations) {
-            if (!ws.bribed && ws.health > 0) {
-                stationStack.push(ws);
+        if (weatherStations.size() >= 2 && player.bribesRemaining >= 2) {
+            FriendlyEnemyDmg backward = getFriendlyEnemyDamage(WeatherStationUtilities.WeatherDirection.Backward);
+            int diffBack = backward.enemyDmg-backward.friendlyDmg;
+            if (diffBack > maxDamage) {
+                maxDamage = diffBack;
+                maxDir = WeatherStationUtilities.WeatherDirection.Backward;
             }
-        }
-
-        if (stationStack.empty() || player.bribesRemaining == 0) {
-            return;
         }
 
         if (maxDir == WeatherStationUtilities.WeatherDirection.Clockwise || maxDir == WeatherStationUtilities.WeatherDirection.CounterClockwise ) {
