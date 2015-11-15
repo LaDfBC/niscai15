@@ -130,25 +130,6 @@ public class AI extends BaseAI {
             }
         }
 
-        Map<Integer, Warehouse> dmgRequiredToKill = policeDepartmentUtilities.fireRequiredToBurnAfterRaid(player.otherPlayer.warehouses);
-        TreeSet<Integer> treeSet = new TreeSet<>(dmgRequiredToKill.keySet());
-        Iterator<Integer> keyIter = treeSet.iterator();
-        while(keyIter.hasNext()){
-            if(player.bribesRemaining < 1){
-                return;
-            }
-            Warehouse target = dmgRequiredToKill.get(keyIter.next());
-            for(Warehouse attacker : player.warehouses){
-                if(player.bribesRemaining < 1){
-                    return;
-                }
-                if(attacker.health > 0 && !attacker.bribed){
-                    System.out.println(" raiding to weaken");
-                    attacker.ignite(target);
-                }
-            }
-        }
-
         Building target = friendlyHqStrat.getClosestBuildingAdjacentToEnemyHqIfExposureIsLessThan(10000);
         if(target != null){
             player.headquarters.ignite(target);
@@ -168,7 +149,24 @@ public class AI extends BaseAI {
             }
         }
 
-
+        Map<Integer, Warehouse> dmgRequiredToKill = policeDepartmentUtilities.fireRequiredToBurnAfterRaid(player.otherPlayer.warehouses);
+        TreeSet<Integer> treeSet = new TreeSet<>(dmgRequiredToKill.keySet());
+        Iterator<Integer> keyIter = treeSet.iterator();
+        while(keyIter.hasNext()){
+            if(player.bribesRemaining < 1){
+                return;
+            }
+            target = dmgRequiredToKill.get(keyIter.next());
+            for(Warehouse attacker : player.warehouses){
+                if(player.bribesRemaining < 1){
+                    return;
+                }
+                if(attacker.health > 0 && !attacker.bribed){
+                    System.out.println(" raiding to weaken");
+                    attacker.ignite(target);
+                }
+            }
+        }
 
     }
 
