@@ -98,6 +98,10 @@ public class AI extends BaseAI {
         // <<-- /Creer-Merge: ended -->>
     }
 
+    public void weatherFiddle() {
+
+    }
+
     public void joeFiddle(){
         EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
 
@@ -115,17 +119,22 @@ public class AI extends BaseAI {
 
         }
         while (player.bribesRemaining > 0) {
-            attackUsingNearestWarehouse(target);
+            if(!attackUsingNearestWarehouse(target)){
+                //if we didn't attack anything return, avoiding an infinite loop
+                return;
+            }
         }
     }
 
-    public void attackUsingNearestWarehouse(Building target){
+    public Boolean attackUsingNearestWarehouse(Building target){
         Warehouse myAttacker = WarehouseUtilities.getClosestWarehouse(target, myAttackers);
         if(myAttacker != null){
             player.log(myAttacker.id + " : " + target.id);
             myAttacker.ignite(target);
             myAttackers.remove(myAttacker);
+            return true;
         }
+        return false;
     }
     /**
      * This is called every time the AI is asked to respond with a command during their turn
