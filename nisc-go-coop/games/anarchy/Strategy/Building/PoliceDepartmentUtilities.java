@@ -78,4 +78,13 @@ public class PoliceDepartmentUtilities {
         return raidableWarehouses;
     }
 
+    public PoliceDepartment getFirstStandingPoliceStation() {
+        for(PoliceDepartment currentPopo : myPoliceDepartments) {
+            if(currentPopo.health > 0) {
+                return currentPopo;
+            }
+        }
+
+        return null;
+    }
 }

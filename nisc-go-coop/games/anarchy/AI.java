@@ -40,6 +40,8 @@ public class AI extends BaseAI {
     WarehouseUtilities warehouseUtilities;
     WeatherStationUtilities weatherStationUtilities;
     EnemyHeadquartersUtilities enemyHeadquartersUtilities;
+    PoliceDepartmentUtilities policeDepartmentUtilities;
+    FriendlyHeadquartersUtilities friendlyHeadquartersUtilities;
     // <<-- /Creer-Merge: fields -->>
 
 
@@ -73,10 +75,11 @@ public class AI extends BaseAI {
                 break;
             }
         }
-        System.out.println("ONE!");
         warehouseUtilities = new WarehouseUtilities(player);
         weatherStationUtilities = new WeatherStationUtilities(player, game);
         enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters, game);
+        policeDepartmentUtilities = new PoliceDepartmentUtilities(player.policeDepartments, enemyHeadquartersUtilities);
+        friendlyHeadquartersUtilities = new FriendlyHeadquartersUtilities(player.headquarters, game);
         // <<-- /Creer-Merge: start -->>
     }
 
@@ -107,7 +110,7 @@ public class AI extends BaseAI {
     }
 
     public void georgeFiddle() {
-        igniteOneBuildingCloseToHQ();
+        focusedBurnStrategy();
     }
 
     public void joeFiddle(){
@@ -190,14 +193,50 @@ public class AI extends BaseAI {
         }
     }
 
-    public Building igniteOneBuildingCloseToHQ() {
+    public Building focusedBurnStrategy() {
 //        return enemyHeadquarters;
         //If we go on turn two, we want to NOT blow in the same direction the other dude is blowing
         // We'd ALSO like to ignite the fire he's (probably) going to fan in our face
 
-        //For now, choose randomly
+        //Logic for choosing a different direction.....First load all friendly buildings on fire.
+        Map<Building, WeatherStationUtilities.CardinalDirection> friendlyNeighbors = friendlyHeadquartersUtilities.getFriendlyHeadquartersNeighbors();
+        List<Building> surroundingBuildingsOnFire = new ArrayList<>();
+        for(Map.Entry<Building, WeatherStationUtilities.CardinalDirection> friendlyHeadquartersNeightbor : friendlyNeighbors.entrySet()) {
+            if(friendlyHeadquartersNeightbor.getKey().fire > 0 || friendlyHeadquartersNeightbor.getKey().isHeadquarters) {
+                surroundingBuildingsOnFire.add(friendlyHeadquartersNeightbor.getKey());
+            }
+        }
+
+        //Remove them from the list of options.  If all buildings are on fire, just choose one of theirs at random.
+        if(surroundingBuildingsOnFire.size() < friendlyNeighbors.size()) {
+            for(Building neighbor : surroundingBuildingsOnFire) {
+                friendlyNeighbors.remove(neighbor);
+            }
+        } else { //Use the building on their side with the least fire on our side
+            Collections.sort(surroundingBuildingsOnFire, new Comparator<Building>() {
+                @Override
+                public int compare(Building o1, Building o2) {
+                    if (o1.fire > o2.fire) {
+                        return 1;
+                    } else if (o1.fire < o2.fire) {
+                        return -1;
+                    }
+                    return 0;
+                }
+            });
+            while(friendlyNeighbors.size() >= 2) { //Leave 1 around.  The one with fewest fire.
+                friendlyNeighbors.remove(surroundingBuildingsOnFire.get(0));
+                surroundingBuildingsOnFire.remove(0);
+            }
+        }
+
         Map<Building, WeatherStationUtilities.CardinalDirection> buildings = enemyHeadquartersUtilities.getEnemyHeadquartersNeighbors();
         String nextDirection = weatherStationUtilities.getNextWeather().direction;
+
+        //Do NOT light our own HQ on fire!
+        if(buildings.get(myHeadquarters) != null) {
+            buildings.remove(myHeadquarters);
+        }
 
         Map.Entry<Building, WeatherStationUtilities.CardinalDirection> cardinalBuilding = buildings.entrySet().iterator().next();
         boolean directionNeedsChanging = true;
@@ -207,13 +246,16 @@ public class AI extends BaseAI {
                 cardinalBuilding = currentBuilding;
                 break;
             }
-            System.out.println(1);
         }
 
 //        List<Building> oneBuilding = enemyHeadquarters.getBuildingsWithinDistance(1);
 
 //        Building targetBuilding = oneBuilding.get(0);
 
+        //IF HQ IS CLOSE ENOUGH, USE IT INSTEAD LOGIC
+        //END HQ IS CLOSE ENOUGH LOGIC
+
+        //Get a list of all our warehouses.  Use them to burn buildings around the enemy HQ
         Set<Warehouse> bribeableWarehouses = warehouseUtilities.getBribeableWarehouses();
 
         while(cardinalBuilding.getKey().fire < 10) {
@@ -222,10 +264,9 @@ public class AI extends BaseAI {
                 attacker.ignite(cardinalBuilding.getKey());
                 bribeableWarehouses.remove(attacker);
             }
-            System.out.println(2);
         }
 
-
+        //Change direction first.  Make sure we fan flames correctly
         while(player.bribesRemaining > 0 && directionNeedsChanging && weatherStationUtilities.getNextBribeableWeatherStation() != null) {
              WeatherStationUtilities.WeatherDirection direction = weatherStationUtilities.getDirection(weatherStationUtilities.getNextWeather().direction,
                     weatherStationUtilities.getOppositeOf(cardinalBuilding.getValue()));
@@ -238,20 +279,23 @@ public class AI extends BaseAI {
                 weatherStationUtilities.getNextBribeableWeatherStation().rotate(true);
                 directionNeedsChanging = false;
             }
-            System.out.println(3);
         }
 
+        //Intensify as much as possible
         while(player.bribesRemaining > 0 && weatherStationUtilities.getNextWeather().intensity < 10 && weatherStationUtilities.getNextBribeableWeatherStation() != null) {
             weatherStationUtilities.getNextBribeableWeatherStation().intensify();
-            System.out.println(4);
         }
 
-        return cardinalBuilding.getKey();
+        //First priority: Raid the enemy HQ if it would be useful to dish out extra pain
+        if(player.bribesRemaining > 0 && policeDepartmentUtilities.atLeastOnePoliceStationStanding() && enemyHeadquarters.exposure > 0) {
+            policeDepartmentUtilities.getFirstStandingPoliceStation().raid(enemyHeadquarters);
+        }
 
         //Increase other fires around enemy HQ
 
-        //Police spike enemy HQ
+        return cardinalBuilding.getKey();
 
+        //Last priority: Play defensive and see if we can fire department away some of burn that's hurting us.
         // Check if fire would hurt our HQ and use it the Fire Department to put out fires
     }
 
