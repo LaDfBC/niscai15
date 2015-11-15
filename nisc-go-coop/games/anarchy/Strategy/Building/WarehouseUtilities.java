@@ -20,7 +20,7 @@ public class WarehouseUtilities {
         }
         Warehouse closest = warehouses.get(0);
         for(Warehouse warehouse : warehouses){
-            if(exposureAddedToIgnite(warehouse, building) < exposureAddedToIgnite(closest, building)){
+            if(warehouse.health > 0 && exposureAddedToIgnite(warehouse, building) < exposureAddedToIgnite(closest, building)){
                 closest = warehouse;
             }
         }
