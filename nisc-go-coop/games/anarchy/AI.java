@@ -168,7 +168,6 @@ public class AI extends BaseAI {
                     return;
                 }
                 if(attacker.health > 0 && !attacker.bribed){
-                    System.out.println(" burning " + enemyWarehouse.id);
                     if(enemyWarehouse.fire > 10 || enemyWarehouse.isHeadquarters){
                         while(keyIter.hasNext()) {
                             enemyWarehouse = dmgRequiredToKill.get(keyIter.next());
@@ -178,6 +177,7 @@ public class AI extends BaseAI {
                             }
                         }
                     }else{
+                        System.out.println(" burning " + enemyWarehouse.id);
                         attacker.ignite(enemyWarehouse);
                     }
                 }
