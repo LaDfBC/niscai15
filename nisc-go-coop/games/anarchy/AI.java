@@ -103,6 +103,7 @@ public class AI extends BaseAI {
     }
 
     public void joeFiddle(){
+        player.log("herp derp");
         EnemyHeadquartersUtilities enemyHeadquartersUtilities = new EnemyHeadquartersUtilities(enemyHeadquarters);
 
 
