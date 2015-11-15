@@ -6,6 +6,7 @@ package games.anarchy;
 
 import java.util.*;
 
+import games.anarchy.Strategy.Building.WeatherStationUtilities;
 import org.json.JSONObject;
 
 import joueur.Client;
@@ -116,6 +117,21 @@ public class Building extends GameObject {
         }
 
         return buildings;
+    }
+
+
+    public Building getAdjacentBuilding(WeatherStationUtilities.CardinalDirection direction) {
+        switch (direction) {
+            case north:
+                return buildingNorth;
+            case east:
+                return buildingEast;
+            case south:
+                return buildingSouth;
+            case west:
+                return buildingWest;
+        }
+        return null;
     }
 
     private void addDistNotNull(Building b, Integer fromDist, Queue<Building> bQueue, Map<Building, Integer> distMap, List<Building> buildingList) {

@@ -6,10 +6,7 @@ package games.anarchy;
 
 import java.util.*;
 
-import games.anarchy.Strategy.Building.BuildingUtilities;
-import games.anarchy.Strategy.Building.EnemyHeadquartersUtilities;
-import games.anarchy.Strategy.Building.WarehouseUtilities;
-import games.anarchy.Strategy.Building.WeatherStationUtilities;
+import games.anarchy.Strategy.Building.*;
 import games.anarchy.Strategy.Heuristic.WeatherOffsense;
 import joueur.BaseAI;
 
@@ -267,6 +264,92 @@ public class AI extends BaseAI {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Tries to extinguish flames in the direction opposite of the next forecast(first)
+     * Then goes for the largest buildings (next)
+     * @param bribesToUse
+     * @return number of turns used
+     */
+    public int fireExtinguishAroundHQ(int bribesToUse) {
+        //first get HQ
+        Warehouse ourHQ = player.headquarters;
+        int bribesLeft = Math.min(bribesToUse, player.bribesRemaining);
+        int bribesUsed = 0;
+
+        if (bribesLeft <= 0) {
+            return 0;
+        }
+
+        Stack<FireDepartment> fireDepartments = new Stack<>();
+
+        for (FireDepartment fdpt : player.fireDepartments) {
+            if (fdpt != null && fdpt.bribed == false && fdpt.health > 0) {
+                fireDepartments.push(fdpt);
+            }
+        }
+
+        //get the wind direction
+        WeatherStationUtilities.CardinalDirection dir = Enum.valueOf(WeatherStationUtilities.CardinalDirection.class, game.nextForecast.direction);
+        dir = dir.rotate180();
+
+        //get the building in the opposite direction
+        Building adjacentUpwindBuilding = ourHQ.getAdjacentBuilding(dir);
+        if (adjacentUpwindBuilding != null && adjacentUpwindBuilding.owner == player) {
+            int numberOfExtinguishes = adjacentUpwindBuilding.fire/2;
+
+            int numberOfTurnsToUse = Math.min(bribesLeft, numberOfExtinguishes);
+            numberOfTurnsToUse = Math.min(numberOfTurnsToUse, fireDepartments.size());
+
+            for (int bribes = 0; bribes < numberOfTurnsToUse; bribes++) {
+                if (fireDepartments.isEmpty() || bribesLeft <= 0) {
+                    return bribesUsed;
+                }
+                FireDepartment dpt = fireDepartments.pop();
+                dpt.extinguish(adjacentUpwindBuilding);
+                bribesUsed++;
+                bribesLeft--;
+            }
+        }
+
+
+        //now evenly use the other 3 buildings
+        List<Building> adjacentUrgentBuildings = new ArrayList<>();
+        List<Building> closeBuildings = ourHQ.getBuildingsWithinDistance(1);
+        for (Building b : closeBuildings) {
+            if (b != null && b.owner == player && b.fire > 1) {
+                adjacentUrgentBuildings.add(b);
+            }
+        }
+
+        if (bribesLeft <= 0 || adjacentUrgentBuildings.isEmpty()) {
+            return bribesUsed;
+        }
+
+        while (bribesLeft >= 0) {
+            //find the highest fire building
+            Building highestFire = adjacentUrgentBuildings.get(0);
+
+            for (Building b : adjacentUrgentBuildings) {
+                if (b.fire > highestFire.fire) {
+                    highestFire = b;
+                }
+            }
+
+            if (highestFire.fire <= 1 || fireDepartments.empty()) {
+                return bribesUsed;
+            }
+
+            //put out the highest fire
+            FireDepartment fdpt = fireDepartments.pop();
+            fdpt.extinguish(highestFire);
+            bribesLeft--;
+            bribesUsed++;
+        }
+
+
+        return bribesUsed;
     }
     /**
      * This is called every time the AI is asked to respond with a command during their turn
