@@ -53,7 +53,6 @@ public class FriendlyHeadquartersStrategy {
             WeatherStationUtilities.CardinalDirection windDirection = weatherStationUtilities.getDirectionOfWindNextTurn();
             if(windDirection != null) {
                 Building buildingAdjacentToTargetOppositeOfWind = warehouseUtilities.getBuildingAdjacentToTargetOppositeOfWind(player.otherPlayer.headquarters, windDirection);
-                System.out.println("friendly hq strat target: " + (buildingAdjacentToTargetOppositeOfWind.isHeadquarters ? "hq" : "not hq"));
                 return buildingAdjacentToTargetOppositeOfWind;
             }
         }
