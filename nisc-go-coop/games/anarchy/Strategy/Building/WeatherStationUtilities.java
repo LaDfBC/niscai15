@@ -118,7 +118,8 @@ public class WeatherStationUtilities {
                     break;
             }
             if (adjacentBuilding != null) {
-                fireAdded.add(new FireAdded(adjacentBuilding, intensity));
+                int fireSpread = Math.min(intensity, b.fire);
+                fireAdded.add(new FireAdded(adjacentBuilding, fireSpread));
             }
         }
 
